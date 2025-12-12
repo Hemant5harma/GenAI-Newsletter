@@ -12,6 +12,7 @@ interface GenerationSettings {
     keywords: string[];
     colors: { mode: 'random' | 'manual'; primary: string; secondary: string; preset?: string };
     contentSize: 'small' | 'medium' | 'large';
+    editorMode: 'html' | 'blocks';
 }
 
 const colorPresets = [
@@ -30,6 +31,7 @@ const defaultSettings: GenerationSettings = {
     keywords: [],
     colors: { mode: 'random', primary: '#1a1a2e', secondary: '#6366f1' },
     contentSize: 'medium',
+    editorMode: 'html',
 };
 
 export default function BrandSettingsForm({ brand }: { brand: any }) {
@@ -305,6 +307,47 @@ export default function BrandSettingsForm({ brand }: { brand: any }) {
                     </>
                 )}
             </section>
+
+            {/* Editor Mode - Commented out for now
+            <section className="card" style={{ padding: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
+                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>✏️ Editor Mode</span>
+                </div>
+                <p className="text-sm text-muted" style={{ marginBottom: '1rem' }}>
+                    Choose how you want to edit newsletters after generation
+                </p>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    {[
+                        { value: 'html', label: 'HTML Editor', icon: '</>', desc: 'Edit raw HTML directly. Full control over design.' },
+                        { value: 'blocks', label: 'Block Editor', icon: '🧱', desc: 'Edit structured content blocks. Easier for non-technical users.' }
+                    ].map(option => (
+                        <label key={option.value} style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1,
+                            padding: '1rem',
+                            border: config.editorMode === option.value ? '2px solid var(--color-accent)' : '1px solid var(--color-border)',
+                            borderRadius: 'var(--radius-md)',
+                            cursor: 'pointer',
+                            background: config.editorMode === option.value ? 'var(--color-bg-tertiary)' : 'transparent',
+                            transition: 'all 0.15s'
+                        }}>
+                            <input
+                                type="radio"
+                                name="editorMode"
+                                value={option.value}
+                                checked={config.editorMode === option.value}
+                                onChange={(e) => setConfig({ ...config, editorMode: e.target.value as 'html' | 'blocks' })}
+                                style={{ display: 'none' }}
+                            />
+                            <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{option.icon}</div>
+                            <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{option.label}</div>
+                            <div className="text-sm text-muted">{option.desc}</div>
+                        </label>
+                    ))}
+                </div>
+            </section>
+            */}
 
             {/* Content Size */}
             <section className="card" style={{ padding: '1.5rem' }}>

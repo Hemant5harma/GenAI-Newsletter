@@ -9,6 +9,7 @@ interface GenerationSettings {
     keywords: string[];
     colors: { mode: 'random' | 'manual'; primary: string; secondary: string; preset?: string };
     contentSize: 'small' | 'medium' | 'large';
+    editorMode: 'html' | 'blocks';
 }
 
 const defaultSettings: GenerationSettings = {
@@ -19,6 +20,7 @@ const defaultSettings: GenerationSettings = {
     keywords: [],
     colors: { mode: 'random', primary: '#6366f1', secondary: '#8b5cf6' },
     contentSize: 'medium',
+    editorMode: 'html',
 };
 
 interface BrandData {
@@ -60,7 +62,7 @@ export async function generateNewsletterForBrand(brandId: string): Promise<strin
         const subject = subjectMatch ? subjectMatch[1] : `${brand.name} Newsletter`;
         const preheader = preheaderMatch ? preheaderMatch[1] : "Your latest updates";
 
-        // Store the full HTML directly
+        // Store the full HTML
         await db.issue.update({
             where: { id: issue.id },
             data: {
@@ -70,6 +72,13 @@ export async function generateNewsletterForBrand(brandId: string): Promise<strin
                 status: "DRAFT"
             }
         });
+
+        // If blocks mode is selected, create default content blocks
+        /* Block generation disabled
+        if (settings.editorMode === 'blocks') {
+           // ... block creation code
+        }
+        */
 
         console.log("=== GENERATION COMPLETE ===");
         return issue.id;
