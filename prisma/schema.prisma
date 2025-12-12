@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  brands    Brand[]
+}
+
+model Brand {
+  id           String   @id @default(uuid())
+  name         String
+  domain       String?
+  category     String?
+  tone         String?  // e.g., "Professional", "Witty"
+  audience     String?
+  description  String?  // Richer description/mission
+  tagline      String?
+  socials      String?  // JSON string of social links
+  schedule     String?  // e.g., "09:00"
+  settings     Json?    // Generation settings (images, colors, etc.)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  issues       Issue[]
+}
+
+model Issue {
+  id           String   @id @default(uuid())
+  brandId      String
+  brand        Brand    @relation(fields: [brandId], references: [id])
+  subject      String?
+  preheader    String?
+  htmlContent  String?  // AI-generated full HTML
+  status       String   @default("DRAFT") // DRAFT, APPROVED, SENT
+  generatedAt  DateTime @default(now())
+  scheduledFor DateTime?
+  contentBlocks ContentBlock[]
+  feedbacks    Feedback[]
+
+  @@index([brandId])
+}
+
+model ContentBlock {
+  id        String @id @default(uuid())
+  issueId   String
+  issue     Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  type      String // HERO, ARTICLE, TIP, LINK, CTA
+  title     String?
+  content   String? // Text body or HTML
+  imageUrl  String?
+  linkUrl   String?
+  ctaText   String?
+  order     Int    @default(0)
+
+  @@index([issueId])
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  issueId   String
+  issue     Issue    @relation(fields: [issueId], references: [id])
+  rating    Int?
+  comment   String?
+  createdAt DateTime @default(now())
+}
