@@ -140,3 +140,24 @@ export async function deleteIssueAction(issueId: string, brandId: string) {
     revalidatePath(`/dashboard/brands/${brandId}`);
     return { success: true };
 }
+
+export async function deleteBrandAction(brandId: string) {
+    // Delete all content blocks first
+    await db.contentBlock.deleteMany({
+        where: { issue: { brandId } }
+    });
+
+    // Delete all issues
+    await db.issue.deleteMany({
+        where: { brandId }
+    });
+
+    // Delete the brand
+    await db.brand.delete({
+        where: { id: brandId }
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true };
+}
+

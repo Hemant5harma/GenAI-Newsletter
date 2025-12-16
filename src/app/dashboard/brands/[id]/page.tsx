@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { generateIssueAction } from "@/app/actions";
 import DeleteIssueButton from "@/components/DeleteIssueButton";
+import GenerateIssueButton from "@/components/GenerateIssueButton";
 
 interface Issue {
     id: string;
@@ -64,12 +65,10 @@ export default async function BrandDashboard(props: { params: Promise<{ id: stri
                     </p>
                 </div>
 
-                <form action={generateIssueAction}>
-                    <input type="hidden" name="brandId" value={brand.id} />
-                    <button type="submit" className="btn btn-primary">
-                        <span>✨</span> Generate New Issue
-                    </button>
-                </form>
+                <GenerateIssueButton
+                    brandId={brand.id}
+                    generateAction={generateIssueAction}
+                />
             </div>
 
             {/* Stats Cards */}

@@ -118,33 +118,6 @@ export default function BrandSettingsForm({ brand }: { brand: any }) {
                 )}
             </section>
 
-            {/* Links Count */}
-            <section className="card" style={{ padding: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>🔗 Links Count</span>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                        <input
-                            type="checkbox"
-                            checked={config.linksCount.mode === 'random'}
-                            onChange={(e) => setConfig({ ...config, linksCount: { ...config.linksCount, mode: e.target.checked ? 'random' : 'manual' } })}
-                        />
-                        <span className="text-sm">AI Decides</span>
-                    </label>
-                </div>
-                <p className="text-sm text-muted" style={{ marginBottom: '1rem' }}>
-                    Number of content blocks per newsletter
-                </p>
-                {config.linksCount.mode === 'manual' && (
-                    <input
-                        type="number"
-                        className="input"
-                        min={1}
-                        max={10}
-                        value={config.linksCount.count}
-                        onChange={(e) => setConfig({ ...config, linksCount: { ...config.linksCount, count: parseInt(e.target.value) || 4 } })}
-                    />
-                )}
-            </section>
 
             {/* Categories */}
             <section className="card" style={{ padding: '1.5rem' }}>
@@ -188,23 +161,23 @@ export default function BrandSettingsForm({ brand }: { brand: any }) {
             {/* Content */}
             <section className="card" style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>📝 Content Source</span>
+                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>📝 Newsletter Topic</span>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                         <input
                             type="checkbox"
                             checked={config.content.mode === 'random'}
                             onChange={(e) => setConfig({ ...config, content: { ...config.content, mode: e.target.checked ? 'random' : 'manual' } })}
                         />
-                        <span className="text-sm">AI Writes</span>
+                        <span className="text-sm">AI Decides</span>
                     </label>
                 </div>
                 <p className="text-sm text-muted" style={{ marginBottom: '1rem' }}>
-                    Provide base content or let AI generate from scratch
+                    Provide a specific topic or let AI choose based on trends
                 </p>
                 {config.content.mode === 'manual' && (
                     <textarea
                         className="textarea"
-                        placeholder="Enter your content template. AI will use this as the primary source..."
+                        placeholder="E.g., 'The future of AI agents' or 'Weekly fashion roundup'"
                         rows={4}
                         value={config.content.text}
                         onChange={(e) => setConfig({ ...config, content: { ...config.content, text: e.target.value } })}
@@ -308,99 +281,6 @@ export default function BrandSettingsForm({ brand }: { brand: any }) {
                 )}
             </section>
 
-            {/* Editor Mode - Commented out for now
-            <section className="card" style={{ padding: '1.5rem' }}>
-                <div style={{ marginBottom: '1rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>✏️ Editor Mode</span>
-                </div>
-                <p className="text-sm text-muted" style={{ marginBottom: '1rem' }}>
-                    Choose how you want to edit newsletters after generation
-                </p>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    {[
-                        { value: 'html', label: 'HTML Editor', icon: '</>', desc: 'Edit raw HTML directly. Full control over design.' },
-                        { value: 'blocks', label: 'Block Editor', icon: '🧱', desc: 'Edit structured content blocks. Easier for non-technical users.' }
-                    ].map(option => (
-                        <label key={option.value} style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            flex: 1,
-                            padding: '1rem',
-                            border: config.editorMode === option.value ? '2px solid var(--color-accent)' : '1px solid var(--color-border)',
-                            borderRadius: 'var(--radius-md)',
-                            cursor: 'pointer',
-                            background: config.editorMode === option.value ? 'var(--color-bg-tertiary)' : 'transparent',
-                            transition: 'all 0.15s'
-                        }}>
-                            <input
-                                type="radio"
-                                name="editorMode"
-                                value={option.value}
-                                checked={config.editorMode === option.value}
-                                onChange={(e) => setConfig({ ...config, editorMode: e.target.value as 'html' | 'blocks' })}
-                                style={{ display: 'none' }}
-                            />
-                            <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{option.icon}</div>
-                            <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{option.label}</div>
-                            <div className="text-sm text-muted">{option.desc}</div>
-                        </label>
-                    ))}
-                </div>
-            </section>
-            */}
-
-            {/* Content Size */}
-            <section className="card" style={{ padding: '1.5rem' }}>
-                <div style={{ marginBottom: '1rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>📏 Content Size</span>
-                </div>
-                <p className="text-sm text-muted" style={{ marginBottom: '1rem' }}>
-                    Control how much content AI generates for each newsletter
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {[
-                        { value: 'small', label: 'Small', desc: 'Brief & scannable (2-3 short paragraphs per section)' },
-                        { value: 'medium', label: 'Medium', desc: 'Standard depth (3-5 paragraphs, recommended)' },
-                        { value: 'large', label: 'Large', desc: 'Comprehensive & detailed (5-7+ paragraphs)' }
-                    ].map(option => (
-                        <label key={option.value} style={{
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            gap: '0.75rem',
-                            padding: '0.75rem',
-                            border: '1px solid var(--color-border)',
-                            borderRadius: 'var(--radius-md)',
-                            cursor: 'pointer',
-                            background: config.contentSize === option.value ? 'var(--color-bg-tertiary)' : 'transparent',
-                            transition: 'all 0.15s'
-                        }}>
-                            <input
-                                type="radio"
-                                name="contentSize"
-                                value={option.value}
-                                checked={config.contentSize === option.value}
-                                onChange={(e) => setConfig({ ...config, contentSize: e.target.value as 'small' | 'medium' | 'large' })}
-                                style={{ marginTop: '0.25rem' }}
-                            />
-                            <div style={{ flex: 1 }}>
-                                <div style={{ fontWeight: 500, marginBottom: '0.25rem' }}>{option.label}</div>
-                                <div className="text-sm text-muted">{option.desc}</div>
-                            </div>
-                        </label>
-                    ))}
-                </div>
-            </section>
-
-            {/* Format Info */}
-            <section style={{ padding: '1.5rem', background: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.125rem' }}>📐 Format & Layout</span>
-                    <span className="badge badge-accent">AI Decides</span>
-                </div>
-                <p className="text-sm text-muted">
-                    Newsletter layout is always optimized by AI for best engagement based on your settings
-                </p>
-            </section>
 
             {/* Save Button */}
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>

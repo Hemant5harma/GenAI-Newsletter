@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { db } from "@/lib/db";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
@@ -23,17 +22,7 @@ export default async function DashboardLayout({
                     {children}
                 </main>
             </div>
-
-            <style>{`
-                .sidebar-link:hover {
-                    background: var(--color-bg-tertiary) !important;
-                    color: var(--color-text-primary) !important;
-                }
-                .add-brand-link:hover {
-                    border-color: var(--color-accent) !important;
-                    color: var(--color-accent) !important;
-                }
-            `}</style>
         </div>
     );
 }
+

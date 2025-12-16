@@ -36,7 +36,18 @@ model Brand {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   issues       Issue[]
+  brandVoice   BrandVoice?
 }
+
+model BrandVoice {
+  id           String   @id @default(uuid())
+  brandId      String   @unique
+  vocabulary   Json     // Top terms, phrases
+  toneMarkers  Json     // Sentiment scores, patterns
+  styleGuide   Json     // Formatting rules
+  brand        Brand    @relation(fields: [brandId], references: [id])
+}
+
 
 model Issue {
   id           String   @id @default(uuid())
