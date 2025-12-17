@@ -138,10 +138,14 @@ export async function generateNewsletterForBrand(brandId: string): Promise<strin
 
         const layoutOutput = await executeLayoutAgent(layoutInput);
 
-        // Use Layout Agent's design tokens for colors (override if provided)
-        const finalPrimaryColor = layoutOutput.designTokens.primaryColor || primaryColor;
-        const finalSecondaryColor = layoutOutput.designTokens.secondaryColor || secondaryColor;
-        const finalAccentColor = layoutOutput.designTokens.accentColor || '#10b981';
+        // Use colors from Research Agent (dynamic based on content)
+        const finalColors = {
+            primary: researchOutput.colorPalette.primary,
+            secondary: researchOutput.colorPalette.secondary,
+            accent: researchOutput.colorPalette.accent,
+            text: researchOutput.colorPalette.text,
+            background: researchOutput.colorPalette.background
+        };
 
         // ═══════════════════════════════════════════════════════════════
         // AGENT 4: DESIGNER
@@ -149,9 +153,10 @@ export async function generateNewsletterForBrand(brandId: string): Promise<strin
         const designerInput: DesignerInput = {
             brand,
             content: writerOutput,
-            colors: { primary: finalPrimaryColor, secondary: finalSecondaryColor },
+            colors: { primary: finalColors.primary, secondary: finalColors.secondary },
             images,
-            layoutBlueprint: layoutOutput // Pass the full layout blueprint
+            layoutBlueprint: layoutOutput,
+            colorPalette: finalColors
         };
 
         const designerOutput = await executeDesignerAgent(designerInput);
