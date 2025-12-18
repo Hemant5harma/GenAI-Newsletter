@@ -9,6 +9,7 @@
 
 import { generateTextForResearch } from "../ai";
 import { BrandData } from "../generator";
+import { generateValidatedPalette } from "../colors";
 
 export interface ResearchInput {
     brand: BrandData;
@@ -131,12 +132,27 @@ Based on the content theme, industry, and mood, suggest a cohesive 5-color palet
 
 **Output Format:**
 COLOR PALETTE:
-- Primary: #1e3a8a (main headers, brand color)
-- Secondary: #3b82f6 (links, supporting elements)
-- Accent: #10b981 (CTAs, highlights)
-- Text: #1f2937 (body text - must be dark for readability)
-- Background: #ffffff (page background)
+- Primary: #[HEX CODE] (main brand color)
+- Secondary: #[HEX CODE] (links, supporting elements)
+- Accent: #[HEX CODE] (CTAs, highlights)
+- Text: #1f2937 or darker (body text - must be readable)
+- Background: #ffffff or light tint (page background)
 
+**COLOR STYLE: PROFESSIONAL & SOBER**
+Newsletters require MUTED, PROFESSIONAL colors - NOT vibrant or flashy.
+
+Example palettes (pick from these styles):
+- **Corporate Blue**: Primary #1E3A5F (dark navy), Secondary #4A6FA5 (muted blue), Accent #2D5A3D (forest)
+- **Executive Gray**: Primary #374151 (charcoal), Secondary #6B7280 (slate), Accent #047857 (muted green)
+- **Professional Teal**: Primary #115E59 (deep teal), Secondary #0F766E (teal), Accent #B45309 (muted amber)
+- **Classic Navy**: Primary #1E3A8A (navy), Secondary #3B5998 (muted blue), Accent #7C3AED (muted purple)
+- **Warm Professional**: Primary #78350F (brown), Secondary #92400E (amber-brown), Accent #065F46 (emerald)
+
+**RULES:**
+1. Use DARK, MUTED primary colors (saturation 40-60%, not 100%)
+2. NO bright neons, hot pinks, electric blues
+3. Colors should feel like a professional email, not a party invite
+4. Think: Banks, Law firms, Corporate brands
 Choose colors that:
 1. Match the content mood and industry
 2. Have good contrast for readability
@@ -184,19 +200,17 @@ export async function executeResearchAgent(input: ResearchInput): Promise<Resear
     console.log(`> Research Complete. Received ${rawMarkdown.length} chars.`);
     console.log(`> Preview:\n${rawMarkdown.substring(0, 400)}...`);
 
+    // Generate unique, category-aware color palette PROGRAMMATICALLY
+    // This ensures truly unique colors every time, based on brand category
+    const generatedPalette = generateValidatedPalette(category);
+
     // Parse the markdown into structured data (basic parsing)
     const output: ResearchOutput = {
         mainStory: { headline: '', summary: [], quotes: [] },
         secondaryStories: [],
         rapidFire: [],
         rawMarkdown,
-        colorPalette: {
-            primary: '#1e3a8a',     // Default blue
-            secondary: '#3b82f6',   // Default light blue
-            accent: '#10b981',      // Default green
-            text: '#1f2937',        // Default dark gray
-            background: '#ffffff'   // Default white
-        }
+        colorPalette: generatedPalette  // Use programmatically generated colors
     };
 
     // Extract main story headline if present
@@ -205,20 +219,10 @@ export async function executeResearchAgent(input: ResearchInput): Promise<Resear
         output.mainStory.headline = mainMatch[1].trim();
     }
 
-    // Extract color palette
-    const primaryMatch = rawMarkdown.match(/Primary:\s*(#[0-9a-fA-F]{6})/i);
-    const secondaryMatch = rawMarkdown.match(/Secondary:\s*(#[0-9a-fA-F]{6})/i);
-    const accentMatch = rawMarkdown.match(/Accent:\s*(#[0-9a-fA-F]{6})/i);
-    const textMatch = rawMarkdown.match(/Text:\s*(#[0-9a-fA-F]{6})/i);
-    const bgMatch = rawMarkdown.match(/Background:\s*(#[0-9a-fA-F]{6})/i);
+    // NOTE: We no longer parse colors from AI response.
+    // Colors are generated programmatically for guaranteed uniqueness.
 
-    if (primaryMatch) output.colorPalette.primary = primaryMatch[1];
-    if (secondaryMatch) output.colorPalette.secondary = secondaryMatch[1];
-    if (accentMatch) output.colorPalette.accent = accentMatch[1];
-    if (textMatch) output.colorPalette.text = textMatch[1];
-    if (bgMatch) output.colorPalette.background = bgMatch[1];
-
-    console.log(`> Color Palette: Primary=${output.colorPalette.primary}, Accent=${output.colorPalette.accent}`);
+    console.log(`> Color Palette (Generated): Primary=${output.colorPalette.primary}, Secondary=${output.colorPalette.secondary}, Accent=${output.colorPalette.accent}`);
 
     return output;
 }

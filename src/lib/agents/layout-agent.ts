@@ -11,6 +11,7 @@
 import { generateText } from "../ai";
 import { BrandData } from "../generator";
 import { WriterOutput } from "./writer-agent";
+import { generateValidatedPalette } from "../colors";
 
 export interface LayoutInput {
     brand: BrandData;
@@ -138,7 +139,7 @@ Output ONLY valid JSON:
   "footer": { "type": "FULL_COMPLIANCE", "elements": { "company_name": "{{brandName}}", "unsubscribe_text": "Unsubscribe" }, "css_class": "newsletter-footer" },
   "sections_order": [ { "position": 1, "type": "hero", "source_section": "main_story", "visual_type": "card", "css_class": "hero-card" } ],
   "css_framework": "newsletter_cards",
-  "design_tokens": { "primary_color": "#2563eb", "secondary_color": "#1e40af", "accent_color": "#10b981", "text_color": "#111827", "bg_color": "#ffffff" },
+  "design_tokens": { "primary_color": "[UNIQUE HEX]", "secondary_color": "[UNIQUE HEX]", "accent_color": "[UNIQUE HEX]", "text_color": "#111827", "bg_color": "#ffffff", "font_family": "[MATCH STYLE]", "border_radius": "[0px OR 4px OR 12px]" },
   "dynamic_elements": [ { "type": "cta_button", "position": "end", "source": "cta", "css_class": "cta-primary" } ],
   "mobile_notes": "All sections stack vertically on mobile, touch-friendly spacing"
 }
@@ -195,6 +196,9 @@ export async function executeLayoutAgent(input: LayoutInput): Promise<LayoutOutp
         console.log("> Warning: Could not parse layout JSON, using defaults.");
     }
 
+    // Generate fallback color palette based on brand category for uniqueness
+    const fallbackPalette = generateValidatedPalette(brand.category || 'general');
+
     // Build output with defaults for any missing fields
     const output: LayoutOutput = {
         chosenLayout: {
@@ -234,11 +238,11 @@ export async function executeLayoutAgent(input: LayoutInput): Promise<LayoutOutp
         ],
         cssFramework: layoutJson?.css_framework || 'cards_grid',
         designTokens: {
-            primaryColor: layoutJson?.design_tokens?.primary_color || '#2563eb',
-            secondaryColor: layoutJson?.design_tokens?.secondary_color || '#1e40af',
-            accentColor: layoutJson?.design_tokens?.accent_color || '#10b981',
-            textColor: layoutJson?.design_tokens?.text_color || '#111827',
-            bgColor: layoutJson?.design_tokens?.bg_color || '#ffffff',
+            primaryColor: layoutJson?.design_tokens?.primary_color || fallbackPalette.primary,
+            secondaryColor: layoutJson?.design_tokens?.secondary_color || fallbackPalette.secondary,
+            accentColor: layoutJson?.design_tokens?.accent_color || fallbackPalette.accent,
+            textColor: layoutJson?.design_tokens?.text_color || fallbackPalette.text,
+            bgColor: layoutJson?.design_tokens?.bg_color || fallbackPalette.background,
             fontFamily: layoutJson?.design_tokens?.font_family || "'Segoe UI', Roboto, sans-serif",
             baseFontSize: layoutJson?.design_tokens?.base_font_size || 16
         },

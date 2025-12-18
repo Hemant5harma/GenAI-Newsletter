@@ -29,7 +29,14 @@ export interface WriterOutput {
 }
 
 const WRITER_PROMPT = `
-You are a professional NEWSLETTER WRITER creating a 1000-1300 word email newsletter for {{brandName}}.
+You are a professional NEWSLETTER WRITER. 
+
+**CRITICAL WORD COUNT REQUIREMENT:**
+Your output MUST be between 1000-1500 words MINIMUM. 
+Count your words before finishing. If under 1000, expand the Deep-Dive section.
+This is a HARD requirement - do not submit content under 1000 words.
+
+You are writing a newsletter for {{brandName}}.
 
 ## CRITICAL: 11-SECTION STRUCTURE (FOLLOW EXACTLY IN THIS ORDER)
 
@@ -165,6 +172,9 @@ Let's dive in."
 - CTA + footer: 80-120 words combined
 
 **TOTAL TARGET: 1000-1300 words**
+
+?? **ABSOLUTE MINIMUM: 1000 WORDS** - Count your output! 
+If under 1000, add more depth to the Deep-Dive section.
 
 ---
 
