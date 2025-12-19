@@ -31,8 +31,9 @@ async function generateTextPerplexity(prompt: string): Promise<string> {
             },
             body: JSON.stringify({
                 model: PERPLEXITY_MODEL,
+                max_tokens: 8000, // Allow for long newsletter HTML output
                 messages: [
-                    { role: "system", content: "You are a helpful AI assistant." },
+                    { role: "system", content: "You are a helpful AI assistant. When generating HTML, output complete, valid HTML without truncation." },
                     { role: "user", content: prompt }
                 ]
             })

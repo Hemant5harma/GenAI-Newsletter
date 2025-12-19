@@ -173,7 +173,7 @@ Let's dive in."
 
 **TOTAL TARGET: 1000-1300 words**
 
-?? **ABSOLUTE MINIMUM: 1000 WORDS** - Count your output! 
+**ABSOLUTE MINIMUM: 1000 WORDS** - Count your output! 
 If under 1000, add more depth to the Deep-Dive section.
 
 ---
@@ -203,7 +203,6 @@ If under 1000, add more depth to the Deep-Dive section.
 
 Provide content for ALL 11 SECTIONS in markdown format:
 
-\`\`\`markdown
 # SECTION 1: SUBJECT LINE
 [40-60 char subject]
 
@@ -244,18 +243,16 @@ Provide content for ALL 11 SECTIONS in markdown format:
 
 # SECTION 11: FOOTER
 {{brandName}} | {{brandDomain}} | Unsubscribe
-\`\`\`
 
 **CRITICAL**: Include ALL 11 sections. Hit 1000+ word target. Use conversational tone. Short paragraphs.
 `;
-
-
 
 export async function executeWriterAgent(input: WriterInput): Promise<WriterOutput> {
     const { brand, research, tone, wordCountMin } = input;
 
     const prompt = WRITER_PROMPT
         .replace(/{{brandName}}/g, brand.name)
+        .replace(/{{brandDomain}}/g, brand.domain || 'example.com')
         .replace(/{{tone}}/g, tone || 'witty, smart, and conversational')
         .replace(/{{audience}}/g, brand.audience || 'busy professionals')
         .replace(/{{wordCount}}/g, String(wordCountMin))
@@ -275,7 +272,7 @@ export async function executeWriterAgent(input: WriterInput): Promise<WriterOutp
     console.log(`> Writing Complete. Word count: ~${wordCount}`);
     console.log(`> Preview:\n${rawContent.substring(0, 400)}...`);
 
-    // Parse content into sections (basic extraction)
+    // Parse content into sections
     const output: WriterOutput = {
         subjectLines: [],
         intro: '',
@@ -286,11 +283,24 @@ export async function executeWriterAgent(input: WriterInput): Promise<WriterOutp
         rawContent
     };
 
-    // Extract subject lines
-    const subjectMatch = rawContent.match(/### SUBJECT LINES[\s\S]*?1\.\s*(.+?)[\r\n]+2\.\s*(.+?)[\r\n]+3\.\s*(.+?)[\r\n]/i);
+    // Extract subject line (format: # SECTION 1: SUBJECT LINE)
+    const subjectMatch = rawContent.match(/#\s*SECTION\s*1[:\s]+SUBJECT\s*LINE[^\n]*\n+([^\n#]+)/i);
     if (subjectMatch) {
-        output.subjectLines = [subjectMatch[1].trim(), subjectMatch[2].trim(), subjectMatch[3].trim()];
+        output.subjectLines = [subjectMatch[1].trim()];
     }
+
+    // Extract preheader as second option
+    const preheaderMatch = rawContent.match(/#\s*SECTION\s*2[:\s]+PREHEADER[^\n]*\n+([^\n#]+)/i);
+    if (preheaderMatch) {
+        output.subjectLines.push(preheaderMatch[1].trim());
+    }
+
+    // Fallback if no subject found
+    if (output.subjectLines.length === 0) {
+        output.subjectLines = [`${brand.name} Newsletter`];
+    }
+
+    console.log(`> Subject Line: "${output.subjectLines[0]}"`);
 
     return output;
 }
