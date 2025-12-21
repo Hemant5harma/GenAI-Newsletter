@@ -4,7 +4,7 @@
  * Purpose: Gathers news, blogs, and resources relevant to the brand's category and audience.
  * Uses brand context (category, audience, keywords, description) to find perfect content sources.
  * 
- * Preferred Model: Perplexity (web-enabled) for real-time search
+ * Preferred Model: Gemini (web-enabled) for real-time search
  */
 
 import { generateTextForResearch } from "../ai";

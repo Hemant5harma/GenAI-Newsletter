@@ -3,287 +3,121 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTheme } from "@/lib/theme-context";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import {
+    Plus,
+    Bell,
+    Sun,
+    Moon,
+    Settings,
+    BookOpen,
+    LogOut,
+    LayoutDashboard
+} from "lucide-react";
 
 export default function Header() {
     const { theme, toggleTheme } = useTheme();
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
     return (
-        <header className="glass-strong" style={{
-            height: '80px',
-            borderBottom: '1px solid var(--color-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 2rem',
-            position: 'sticky',
-            top: 0,
-            zIndex: 100,
-            background: 'var(--glass-bg)'
-        }}>
-            {/* Left side - Breadcrumbs & Title */}
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem'
-            }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    color: 'var(--color-text-muted)',
-                    fontSize: '0.875rem'
-                }}>
-                    <span style={{
-                        fontWeight: 600,
-                        color: 'var(--color-text-primary)',
-                        fontSize: '1.125rem'
-                    }}>
+        <header className="h-20 border-b border-border flex items-center justify-between px-6 sticky top-0 z-50 bg-background/80 backdrop-blur-lg">
+            {/* Left side - Title */}
+            <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <LayoutDashboard size={20} className="text-primary" />
+                    <span className="font-semibold text-foreground text-lg">
                         Dashboard
                     </span>
                 </div>
             </div>
 
-            {/* Center - Search Bar */}
-            <div style={{
-                flex: 1,
-                maxWidth: '400px',
-                margin: '0 2rem',
-                display: 'none'  // Hidden for now, can enable later
-            }}>
-                <div style={{
-                    position: 'relative',
-                    width: '100%'
-                }}>
-                    <span style={{
-                        position: 'absolute',
-                        left: '12px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        color: 'var(--color-text-muted)',
-                        fontSize: '0.875rem'
-                    }}>
-                        🔍
-                    </span>
-                    <input
-                        type="text"
-                        placeholder="Search newsletters..."
-                        className="input"
-                        style={{
-                            paddingLeft: '2.5rem',
-                            height: '40px',
-                            fontSize: '0.875rem',
-                            background: 'var(--color-bg-tertiary)'
-                        }}
-                    />
-                </div>
-            </div>
-
             {/* Right side - Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                {/* Quick Action - New Brand */}
-                <Link
-                    href="/brands/new"
-                    className="btn btn-ghost"
-                    title="Create New Brand"
-                    style={{
-                        width: '40px',
-                        height: '40px',
-                        padding: 0,
-                        borderRadius: 'var(--radius-md)',
-                        fontSize: '1.125rem'
-                    }}
-                >
-                    ➕
-                </Link>
+            <div className="flex items-center gap-3">
+                {/* Create New Brand */}
+                <Button asChild size="sm" className="gap-2 hidden sm:flex">
+                    <Link href="/brands/new">
+                        <Plus size={16} />
+                        Create Brand
+                    </Link>
+                </Button>
+
+                {/* Mobile - Plus Only */}
+                <Button asChild size="icon" variant="ghost" className="sm:hidden">
+                    <Link href="/brands/new">
+                        <Plus size={20} />
+                    </Link>
+                </Button>
 
                 {/* Notifications */}
-                <button
-                    className="btn btn-ghost"
-                    title="Notifications"
-                    style={{
-                        width: '40px',
-                        height: '40px',
-                        padding: 0,
-                        borderRadius: 'var(--radius-md)',
-                        fontSize: '1.125rem',
-                        position: 'relative'
-                    }}
-                >
-                    🔔
-                    {/* Notification dot */}
-                    <span style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        width: '8px',
-                        height: '8px',
-                        background: 'var(--color-error)',
-                        borderRadius: '50%',
-                        border: '2px solid var(--color-bg-primary)'
-                    }} />
-                </button>
+                <Button variant="ghost" size="icon" className="relative">
+                    <Bell size={18} />
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
+                </Button>
 
                 {/* Theme Toggle */}
-                <button
-                    onClick={toggleTheme}
-                    className="btn btn-ghost"
-                    title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
-                    style={{
-                        width: '40px',
-                        height: '40px',
-                        padding: 0,
-                        borderRadius: 'var(--radius-md)',
-                        fontSize: '1.25rem',
-                        transition: 'all var(--transition-normal)'
-                    }}
-                >
-                    <span style={{
-                        display: 'inline-block',
-                        transition: 'transform var(--transition-normal)'
-                    }}>
-                        {theme === 'light' ? '🌙' : '☀️'}
-                    </span>
-                </button>
+                <Button variant="ghost" size="icon" onClick={toggleTheme}>
+                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </Button>
 
-                {/* Divider */}
-                <div style={{
-                    width: '1px',
-                    height: '24px',
-                    background: 'var(--color-border)',
-                    margin: '0 0.5rem'
-                }} />
+                <Separator orientation="vertical" className="h-6 hidden sm:block" />
 
-                {/* User Avatar with Dropdown */}
-                <div style={{ position: 'relative' }}>
+                {/* User Menu */}
+                <div className="relative">
                     <button
                         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                        style={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: 'var(--radius-full)',
-                            background: 'var(--gradient-accent)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            fontWeight: 700,
-                            fontSize: '0.875rem',
-                            border: '2px solid transparent',
-                            cursor: 'pointer',
-                            transition: 'all var(--transition-fast)',
-                            boxShadow: isUserMenuOpen ? 'var(--shadow-glow)' : 'none'
-                        }}
+                        className="flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full hover:bg-accent transition-colors"
                     >
-                        U
+                        <Avatar className="h-8 w-8">
+                            <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-sm font-semibold">
+                                U
+                            </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium text-sm hidden sm:block">User</span>
                     </button>
 
                     {/* Dropdown Menu */}
                     {isUserMenuOpen && (
                         <>
                             <div
-                                style={{
-                                    position: 'fixed',
-                                    inset: 0,
-                                    zIndex: 50
-                                }}
+                                className="fixed inset-0 z-40"
                                 onClick={() => setIsUserMenuOpen(false)}
                             />
-                            <div
-                                className="animate-fade"
-                                style={{
-                                    position: 'absolute',
-                                    top: 'calc(100% + 8px)',
-                                    right: 0,
-                                    width: '200px',
-                                    background: 'var(--color-bg-secondary)',
-                                    border: '1px solid var(--color-border)',
-                                    borderRadius: 'var(--radius-lg)',
-                                    boxShadow: 'var(--shadow-lg)',
-                                    overflow: 'hidden',
-                                    zIndex: 100
-                                }}
-                            >
-                                {/* User Info */}
-                                <div style={{
-                                    padding: '1rem',
-                                    borderBottom: '1px solid var(--color-border)'
-                                }}>
-                                    <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>User</div>
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                                        demo@example.com
-                                    </div>
+                            <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-border bg-popover shadow-lg z-50 overflow-hidden animate-fade-in">
+                                <div className="px-4 py-3 border-b border-border">
+                                    <div className="font-semibold">User</div>
+                                    <div className="text-sm text-muted-foreground">user@example.com</div>
                                 </div>
 
-                                {/* Menu Items */}
-                                <div style={{ padding: '0.5rem' }}>
-                                    <button
-                                        className="dropdown-item"
-                                        style={{
-                                            width: '100%',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.75rem',
-                                            padding: '0.625rem 0.75rem',
-                                            fontSize: '0.875rem',
-                                            color: 'var(--color-text-secondary)',
-                                            background: 'transparent',
-                                            border: 'none',
-                                            borderRadius: 'var(--radius-md)',
-                                            cursor: 'pointer',
-                                            textAlign: 'left',
-                                            transition: 'all var(--transition-fast)'
-                                        }}
+                                <div className="py-1">
+                                    <Link
+                                        href="/settings"
+                                        className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-accent transition-colors"
+                                        onClick={() => setIsUserMenuOpen(false)}
                                     >
-                                        <span>⚙️</span>
-                                        Settings
-                                    </button>
-                                    <button
-                                        className="dropdown-item"
-                                        style={{
-                                            width: '100%',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.75rem',
-                                            padding: '0.625rem 0.75rem',
-                                            fontSize: '0.875rem',
-                                            color: 'var(--color-text-secondary)',
-                                            background: 'transparent',
-                                            border: 'none',
-                                            borderRadius: 'var(--radius-md)',
-                                            cursor: 'pointer',
-                                            textAlign: 'left',
-                                            transition: 'all var(--transition-fast)'
-                                        }}
+                                        <Settings size={16} className="text-muted-foreground" />
+                                        <span>Settings</span>
+                                    </Link>
+
+                                    <Link
+                                        href="/docs"
+                                        className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-accent transition-colors"
+                                        onClick={() => setIsUserMenuOpen(false)}
                                     >
-                                        <span>📖</span>
-                                        Documentation
-                                    </button>
-                                    <div style={{
-                                        height: '1px',
-                                        background: 'var(--color-border)',
-                                        margin: '0.5rem 0'
-                                    }} />
+                                        <BookOpen size={16} className="text-muted-foreground" />
+                                        <span>Documentation</span>
+                                    </Link>
+
+                                    <Separator className="my-1" />
+
                                     <button
-                                        className="dropdown-item"
-                                        style={{
-                                            width: '100%',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.75rem',
-                                            padding: '0.625rem 0.75rem',
-                                            fontSize: '0.875rem',
-                                            color: 'var(--color-error)',
-                                            background: 'transparent',
-                                            border: 'none',
-                                            borderRadius: 'var(--radius-md)',
-                                            cursor: 'pointer',
-                                            textAlign: 'left',
-                                            transition: 'all var(--transition-fast)'
-                                        }}
+                                        className="flex items-center gap-3 px-4 py-2.5 text-sm w-full text-left hover:bg-accent transition-colors text-destructive"
+                                        onClick={() => setIsUserMenuOpen(false)}
                                     >
-                                        <span>🚪</span>
-                                        Sign Out
+                                        <LogOut size={16} />
+                                        <span>Log Out</span>
                                     </button>
                                 </div>
                             </div>
@@ -291,13 +125,6 @@ export default function Header() {
                     )}
                 </div>
             </div>
-
-            <style>{`
-                .dropdown-item:hover {
-                    background: var(--color-bg-tertiary) !important;
-                    color: var(--color-text-primary) !important;
-                }
-            `}</style>
         </header>
     );
 }

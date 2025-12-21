@@ -1,9 +1,15 @@
 import { db } from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { generateIssueAction } from "@/app/actions";
+import { generateIssueAction, deleteBrandAction } from "@/app/actions";
 import DeleteIssueButton from "@/components/DeleteIssueButton";
 import GenerateIssueButton from "@/components/GenerateIssueButton";
+import DeleteBrandButton from "@/components/DeleteBrandButton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Settings, Inbox, ArrowRight, FileText, Send, Edit3, MoreHorizontal, Trash2 } from "lucide-react";
 
 interface Issue {
     id: string;
@@ -29,127 +35,133 @@ export default async function BrandDashboard(props: { params: Promise<{ id: stri
     }
 
     const issues = brand.issues as Issue[];
+    const draftCount = issues.filter((i: Issue) => i.status === 'DRAFT').length;
+    const sentCount = issues.filter((i: Issue) => i.status === 'SENT').length;
 
-    const statusColors: Record<string, { bg: string; color: string }> = {
-        DRAFT: { bg: 'var(--color-bg-tertiary)', color: 'var(--color-text-secondary)' },
-        GENERATING: { bg: 'rgba(99, 102, 241, 0.15)', color: 'var(--color-accent)' },
-        APPROVED: { bg: 'rgba(34, 197, 94, 0.15)', color: 'var(--color-success)' },
-        SENT: { bg: 'rgba(34, 197, 94, 0.15)', color: 'var(--color-success)' },
-        FAILED: { bg: 'rgba(239, 68, 68, 0.15)', color: 'var(--color-error)' }
+    const statusVariants: Record<string, "default" | "secondary" | "success" | "warning" | "destructive"> = {
+        DRAFT: 'secondary',
+        GENERATING: 'default',
+        APPROVED: 'success',
+        SENT: 'success',
+        FAILED: 'destructive'
     };
 
     return (
-        <div style={{ padding: '2rem' }} className="animate-in">
-            {/* Header */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: '2rem'
-            }}>
-                <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                        <h1 style={{ fontSize: '1.75rem', fontWeight: 700 }}>{brand.name}</h1>
-                        <span className="badge badge-accent">{brand.category}</span>
-                        <Link
-                            href={`/dashboard/brands/${brand.id}/settings`}
-                            className="btn btn-ghost"
-                            style={{ padding: '0.5rem', fontSize: '1.25rem' }}
-                            title="Generation Settings"
-                        >
-                            ⚙️
-                        </Link>
-                    </div>
-                    <p style={{ color: 'var(--color-text-secondary)' }}>
-                        {brand.tagline || brand.audience || 'No description set'}
-                    </p>
-                </div>
+        <div className="p-6 max-w-6xl mx-auto animate-fade-in">
+            {/* Brand Header Card */}
+            <Card className="mb-6 overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+                <CardContent className="pt-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 flex-wrap mb-2">
+                                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{brand.name}</h1>
+                                <Badge variant="default" className="bg-primary/10 text-primary border-0">
+                                    {brand.category}
+                                </Badge>
+                            </div>
+                            <p className="text-muted-foreground text-sm mb-4">
+                                {brand.tagline || brand.audience || 'AI-powered newsletter generation'}
+                            </p>
 
-                <GenerateIssueButton
-                    brandId={brand.id}
-                    generateAction={generateIssueAction}
-                />
-            </div>
+                            {/* Action Buttons */}
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Button asChild variant="outline" size="sm" className="gap-2">
+                                    <Link href={`/dashboard/brands/${brand.id}/settings`}>
+                                        <Settings size={14} /> Settings
+                                    </Link>
+                                </Button>
+                                <DeleteBrandButton
+                                    brandId={brand.id}
+                                    brandName={brand.name}
+                                    deleteAction={deleteBrandAction}
+                                />
+                            </div>
+                        </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-4" style={{ marginBottom: '2rem' }}>
-                <div className="card" style={{ padding: '1.25rem' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
-                        Total Issues
+                        <GenerateIssueButton
+                            brandId={brand.id}
+                            generateAction={generateIssueAction}
+                        />
                     </div>
-                    <div style={{ fontSize: '2rem', fontWeight: 700 }}>{issues.length}</div>
-                </div>
-                <div className="card" style={{ padding: '1.25rem' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
-                        Drafts
+                </CardContent>
+            </Card>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-3 gap-4 mb-6">
+                <Card className="text-center py-6">
+                    <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                            <FileText size={18} className="text-primary" />
+                        </div>
+                        <div className="text-3xl font-bold">{issues.length}</div>
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide">Total</div>
                     </div>
-                    <div style={{ fontSize: '2rem', fontWeight: 700 }}>
-                        {issues.filter((i: Issue) => i.status === 'DRAFT').length}
+                </Card>
+                <Card className="text-center py-6">
+                    <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center mb-2">
+                            <Edit3 size={18} className="text-amber-500" />
+                        </div>
+                        <div className="text-3xl font-bold">{draftCount}</div>
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide">Drafts</div>
                     </div>
-                </div>
-                <div className="card" style={{ padding: '1.25rem' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
-                        Sent
+                </Card>
+                <Card className="text-center py-6">
+                    <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center mb-2">
+                            <Send size={18} className="text-emerald-500" />
+                        </div>
+                        <div className="text-3xl font-bold">{sentCount}</div>
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide">Sent</div>
                     </div>
-                    <div style={{ fontSize: '2rem', fontWeight: 700 }}>
-                        {issues.filter((i: Issue) => i.status === 'SENT').length}
-                    </div>
-                </div>
+                </Card>
             </div>
 
             {/* Issues List */}
-            <div className="card">
-                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2 style={{ fontSize: '1rem', fontWeight: 600 }}>Recent Issues</h2>
-                </div>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between py-4 px-6">
+                    <CardTitle className="text-lg font-semibold">Recent Issues</CardTitle>
+                    <Badge variant="secondary" className="font-normal">
+                        {issues.length} total
+                    </Badge>
+                </CardHeader>
+
+                <Separator />
 
                 {issues.length === 0 ? (
-                    <div style={{
-                        padding: '4rem 2rem',
-                        textAlign: 'center',
-                        color: 'var(--color-text-muted)'
-                    }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
-                        <p style={{ marginBottom: '0.5rem', fontWeight: 500, color: 'var(--color-text-secondary)' }}>
-                            No newsletters yet
-                        </p>
-                        <p style={{ fontSize: '0.875rem' }}>
+                    <CardContent className="py-16 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                            <Inbox size={28} className="text-muted-foreground/50" />
+                        </div>
+                        <p className="font-medium mb-1">No newsletters yet</p>
+                        <p className="text-sm text-muted-foreground mb-4">
                             Click &quot;Generate New Issue&quot; to create your first AI newsletter
                         </p>
-                    </div>
+                    </CardContent>
                 ) : (
                     <div>
                         {issues.map((issue: Issue, index: number) => (
                             <div
                                 key={issue.id}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '1rem',
-                                    padding: '1rem 1.5rem',
-                                    borderBottom: index < issues.length - 1 ? '1px solid var(--color-border)' : 'none',
-                                    transition: 'background 0.15s'
-                                }}
-                                className="issue-row"
+                                className={`group flex items-center gap-4 px-6 py-4 hover:bg-accent/30 transition-colors ${index < issues.length - 1 ? 'border-b border-border' : ''
+                                    }`}
                             >
                                 <Link
                                     href={`/dashboard/issues/${issue.id}`}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '1rem',
-                                        flex: 1
-                                    }}
+                                    className="flex items-center gap-4 flex-1 min-w-0"
                                 >
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{
-                                            fontWeight: 500,
-                                            marginBottom: '0.25rem',
-                                            color: issue.subject ? 'var(--color-text-primary)' : 'var(--color-text-muted)'
-                                        }}>
+                                    {/* Issue Icon */}
+                                    <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center shrink-0">
+                                        <FileText size={18} className="text-muted-foreground" />
+                                    </div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className={`font-medium mb-0.5 truncate ${issue.subject ? 'text-foreground' : 'text-muted-foreground italic'
+                                            }`}>
                                             {issue.subject || 'Untitled Draft'}
                                         </div>
-                                        <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
+                                        <div className="text-xs text-muted-foreground">
                                             {issue.generatedAt.toLocaleDateString('en-US', {
                                                 month: 'short',
                                                 day: 'numeric',
@@ -159,29 +171,20 @@ export default async function BrandDashboard(props: { params: Promise<{ id: stri
                                             })}
                                         </div>
                                     </div>
-                                    <span
-                                        className="badge"
-                                        style={{
-                                            background: statusColors[issue.status]?.bg || statusColors.DRAFT.bg,
-                                            color: statusColors[issue.status]?.color || statusColors.DRAFT.color
-                                        }}
-                                    >
+
+                                    <Badge variant={statusVariants[issue.status] || 'secondary'}>
                                         {issue.status}
-                                    </span>
-                                    <span style={{ color: 'var(--color-text-muted)', fontSize: '1.25rem' }}>→</span>
+                                    </Badge>
+
+                                    <ArrowRight size={16} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hide-mobile" />
                                 </Link>
+
                                 <DeleteIssueButton issueId={issue.id} brandId={brand.id} />
                             </div>
                         ))}
                     </div>
                 )}
-            </div>
-
-            <style>{`
-                .issue-row:hover {
-                    background: var(--color-bg-tertiary) !important;
-                }
-            `}</style>
+            </Card>
         </div>
     );
 }

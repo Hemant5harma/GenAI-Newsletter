@@ -12,17 +12,30 @@ export default async function DashboardLayout({
     });
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--color-bg-primary)' }}>
+        <div style={{
+            display: 'flex',
+            minHeight: '100vh',
+            background: 'var(--color-bg-primary)',
+        }}>
             <Sidebar brands={brands} />
 
             {/* Main Content Area */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <div style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                minWidth: 0,
+                position: 'relative',
+            }}>
                 <Header />
-                <main style={{ flex: 1, overflowY: 'auto' }}>
+                <main style={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                }}>
                     {children}
                 </main>
             </div>
         </div>
     );
 }
-

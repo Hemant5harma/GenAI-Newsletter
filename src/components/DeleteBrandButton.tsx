@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
 import ConfirmDialog from './ui/ConfirmDialog';
+import { Trash2 } from 'lucide-react';
 
 interface DeleteBrandButtonProps {
     brandId: string;
@@ -30,32 +32,20 @@ export default function DeleteBrandButton({ brandId, brandName, deleteAction }: 
 
     return (
         <>
-            <button
+            <Button
                 onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setIsConfirmOpen(true);
                 }}
-                className="delete-brand-btn"
+                variant="outline"
+                size="sm"
+                className="gap-2 text-muted-foreground hover:text-destructive hover:border-destructive/50 hover:bg-destructive/5"
                 title="Delete brand"
-                style={{
-                    width: '28px',
-                    height: '28px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--color-text-muted)',
-                    fontSize: '0.875rem',
-                    opacity: 0,
-                    transition: 'all var(--transition-fast)'
-                }}
             >
-                🗑️
-            </button>
+                <Trash2 size={14} />
+                <span className="hidden sm:inline">Delete</span>
+            </Button>
 
             <ConfirmDialog
                 isOpen={isConfirmOpen}

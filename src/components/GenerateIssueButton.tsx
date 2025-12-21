@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
 import AgentLoader from './ui/AgentLoader';
+import { Sparkles } from 'lucide-react';
 
 interface GenerateIssueButtonProps {
     brandId: string;
@@ -33,13 +35,14 @@ export default function GenerateIssueButton({ brandId, generateAction }: Generat
     return (
         <>
             <AgentLoader isVisible={isGenerating || isPending} />
-            <button
+            <Button
                 onClick={handleGenerate}
-                className="btn btn-primary"
                 disabled={isGenerating || isPending}
+                className="gap-2"
             >
-                <span>✨</span> Generate New Issue
-            </button>
+                <Sparkles size={16} />
+                Generate New Issue
+            </Button>
         </>
     );
 }

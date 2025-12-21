@@ -1,9 +1,28 @@
 'use client'
 
-import { useState, useTransition, useEffect, useRef } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { updateIssueJson } from "@/app/actions";
 import Editor from "@monaco-editor/react";
 import { useTheme } from "@/lib/theme-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import {
+    Mail,
+    Code,
+    Columns,
+    Eye,
+    Monitor,
+    Smartphone,
+    ExternalLink,
+    Copy,
+    Download,
+    Save,
+    Check,
+    AlertCircle
+} from "lucide-react";
 
 interface Issue {
     id: string;
@@ -18,6 +37,8 @@ interface Issue {
 type ViewMode = 'split' | 'code' | 'preview';
 type DeviceMode = 'desktop' | 'mobile';
 
+const MOBILE_BREAKPOINT = 768;
+
 export default function IssueEditor({ issue, initialHtml }: {
     issue: Issue;
     initialBlocks: any[];
@@ -31,8 +52,24 @@ export default function IssueEditor({ issue, initialHtml }: {
     const [previewContent, setPreviewContent] = useState(initialHtml || "");
     const [viewMode, setViewMode] = useState<ViewMode>('split');
     const [deviceMode, setDeviceMode] = useState<DeviceMode>('desktop');
+    const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
+    const [isMobile, setIsMobile] = useState(false);
     const { theme } = useTheme();
-    const iframeRef = useRef<HTMLIFrameElement>(null);
+
+    // Detect mobile viewport and force preview-only mode
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+            setIsMobile(mobile);
+            if (mobile && viewMode !== 'preview') {
+                setViewMode('preview');
+            }
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, [viewMode]);
 
     // Update preview when htmlContent changes, with a small debounce
     useEffect(() => {
@@ -41,8 +78,6 @@ export default function IssueEditor({ issue, initialHtml }: {
         }, 300);
         return () => clearTimeout(timer);
     }, [htmlContent]);
-
-
 
     const handleSave = () => {
         setSaveStatus('saving');
@@ -63,162 +98,214 @@ export default function IssueEditor({ issue, initialHtml }: {
         });
     };
 
+    const handleCopyHtml = async () => {
+        try {
+            await navigator.clipboard.writeText(htmlContent);
+            setCopyStatus('copied');
+            setTimeout(() => setCopyStatus('idle'), 2000);
+        } catch (err) {
+            console.error('Failed to copy HTML:', err);
+        }
+    };
+
+    const handleDownloadHtml = () => {
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${subject || 'newsletter'}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
     const previewWidth = deviceMode === 'mobile' ? '375px' : '100%';
 
     return (
-        <div style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column' }} className="animate-in">
+        <div className="h-[calc(100vh-60px)] flex flex-col animate-fade-in">
             {/* Header Bar */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0.75rem 1.5rem',
-                borderBottom: '1px solid var(--color-border)',
-                background: 'var(--color-bg-primary)',
-                gap: '1rem',
-                flexWrap: 'wrap'
-            }}>
+            <div className={cn(
+                "flex justify-between items-center border-b border-border bg-background gap-3 flex-wrap",
+                isMobile ? "px-4 py-3" : "px-6 py-3"
+            )}>
                 {/* Left: Title & Inputs */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, minWidth: '300px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '1.25rem' }}>✉️</span>
-                        <span className="badge badge-accent">{issue.brand.name}</span>
+                <div className="flex items-center gap-3 flex-1 min-w-[150px] flex-wrap">
+                    <div className="flex items-center gap-2">
+                        <Mail size={18} className="text-primary" />
+                        <Badge variant="default" className="bg-primary/10 text-primary border-0">
+                            {issue.brand.name}
+                        </Badge>
                     </div>
-                    <input
-                        value={subject}
-                        onChange={(e) => { setSubject(e.target.value); setSaveStatus('idle'); }}
-                        placeholder="Subject Line..."
-                        className="input"
-                        style={{ height: '2.25rem', fontSize: '0.875rem', flex: 1, maxWidth: '300px' }}
-                    />
-                    <input
-                        value={preheader}
-                        onChange={(e) => { setPreheader(e.target.value); setSaveStatus('idle'); }}
-                        placeholder="Preheader..."
-                        className="input"
-                        style={{ height: '2.25rem', fontSize: '0.875rem', flex: 1, maxWidth: '250px' }}
-                    />
+                    {!isMobile && (
+                        <>
+                            <Input
+                                value={subject}
+                                onChange={(e) => { setSubject(e.target.value); setSaveStatus('idle'); }}
+                                placeholder="Subject Line..."
+                                className="h-9 max-w-[300px] min-w-[150px]"
+                            />
+                            <Input
+                                value={preheader}
+                                onChange={(e) => { setPreheader(e.target.value); setSaveStatus('idle'); }}
+                                placeholder="Preheader..."
+                                className="h-9 max-w-[250px] min-w-[120px]"
+                            />
+                        </>
+                    )}
                 </div>
 
-                {/* Center: View Mode Toggle */}
-                <div style={{
-                    display: 'flex',
-                    background: 'var(--color-bg-tertiary)',
-                    borderRadius: '8px',
-                    padding: '4px',
-                    gap: '2px'
-                }}>
-                    <button
-                        onClick={() => setViewMode('code')}
-                        className={viewMode === 'code' ? 'btn btn-primary' : 'btn btn-ghost'}
-                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
-                    >
-                        {'</>'}
-                    </button>
-                    <button
-                        onClick={() => setViewMode('split')}
-                        className={viewMode === 'split' ? 'btn btn-primary' : 'btn btn-ghost'}
-                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
-                    >
-                        Split
-                    </button>
-                    <button
-                        onClick={() => setViewMode('preview')}
-                        className={viewMode === 'preview' ? 'btn btn-primary' : 'btn btn-ghost'}
-                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}
-                    >
-                        Preview
-                    </button>
-                </div>
+                {/* Center: View Mode Toggle - Hide code options on mobile */}
+                {!isMobile && (
+                    <div className="flex bg-muted rounded-lg p-1 gap-1">
+                        <Button
+                            onClick={() => setViewMode('code')}
+                            variant={viewMode === 'code' ? 'default' : 'ghost'}
+                            size="sm"
+                            className="h-8 px-3"
+                            title="Code Only"
+                        >
+                            <Code size={14} />
+                        </Button>
+                        <Button
+                            onClick={() => setViewMode('split')}
+                            variant={viewMode === 'split' ? 'default' : 'ghost'}
+                            size="sm"
+                            className="h-8 px-3"
+                            title="Split View"
+                        >
+                            <Columns size={14} />
+                        </Button>
+                        <Button
+                            onClick={() => setViewMode('preview')}
+                            variant={viewMode === 'preview' ? 'default' : 'ghost'}
+                            size="sm"
+                            className="h-8 px-3"
+                            title="Preview Only"
+                        >
+                            <Eye size={14} />
+                        </Button>
+                    </div>
+                )}
+
+                {/* Mobile indicator */}
+                {isMobile && (
+                    <Badge className="gap-1 bg-primary/10 text-primary border-0">
+                        <Eye size={12} /> Preview Only
+                    </Badge>
+                )}
 
                 {/* Right: Actions */}
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    {/* Device Toggle (only in preview/split mode) */}
-                    {viewMode !== 'code' && (
-                        <div style={{
-                            display: 'flex',
-                            background: 'var(--color-bg-tertiary)',
-                            borderRadius: '6px',
-                            padding: '3px',
-                            gap: '1px'
-                        }}>
-                            <button
+                <div className="flex gap-2 items-center">
+                    {/* Device Toggle (only in preview/split mode on desktop) */}
+                    {!isMobile && viewMode !== 'code' && (
+                        <div className="flex bg-muted rounded-md p-1 gap-0.5">
+                            <Button
                                 onClick={() => setDeviceMode('desktop')}
-                                className="btn btn-ghost"
-                                style={{
-                                    padding: '0.35rem 0.5rem',
-                                    fontSize: '0.875rem',
-                                    background: deviceMode === 'desktop' ? 'var(--color-bg-primary)' : 'transparent'
-                                }}
+                                variant="ghost"
+                                size="sm"
+                                className={cn("h-8 w-8 p-0", deviceMode === 'desktop' && "bg-background")}
                                 title="Desktop View"
                             >
-                                🖥️
-                            </button>
-                            <button
+                                <Monitor size={16} />
+                            </Button>
+                            <Button
                                 onClick={() => setDeviceMode('mobile')}
-                                className="btn btn-ghost"
-                                style={{
-                                    padding: '0.35rem 0.5rem',
-                                    fontSize: '0.875rem',
-                                    background: deviceMode === 'mobile' ? 'var(--color-bg-primary)' : 'transparent'
-                                }}
+                                variant="ghost"
+                                size="sm"
+                                className={cn("h-8 w-8 p-0", deviceMode === 'mobile' && "bg-background")}
                                 title="Mobile View"
                             >
-                                📱
-                            </button>
+                                <Smartphone size={16} />
+                            </Button>
                         </div>
                     )}
-                    <a
-                        href={`/api/preview/${issue.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-ghost"
-                        title="Open in New Tab"
-                        style={{ padding: '0.4rem 0.6rem', textDecoration: 'none', fontSize: '0.875rem' }}
+
+                    <Separator orientation="vertical" className="h-6 hidden sm:block" />
+
+                    {/* Copy HTML Button */}
+                    <Button
+                        onClick={handleCopyHtml}
+                        variant="ghost"
+                        size="icon"
+                        title="Copy HTML"
                     >
-                        ↗️
-                    </a>
+                        {copyStatus === 'copied' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                    </Button>
+
+                    {/* Download HTML Button */}
+                    <Button
+                        onClick={handleDownloadHtml}
+                        variant="ghost"
+                        size="icon"
+                        title="Download HTML"
+                    >
+                        <Download size={16} />
+                    </Button>
+
+                    {/* Open in New Tab */}
+                    <Button asChild variant="ghost" size="icon" title="Open in New Tab">
+                        <a href={`/api/preview/${issue.id}`} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink size={16} />
+                        </a>
+                    </Button>
+
+                    {/* Save Status */}
                     {saveStatus === 'saved' && (
-                        <span style={{ color: 'var(--color-success)', fontSize: '0.75rem', fontWeight: 500 }}>✓ Saved</span>
+                        <span className="text-emerald-500 text-xs font-medium flex items-center gap-1">
+                            <Check size={14} /> Saved
+                        </span>
                     )}
                     {saveStatus === 'error' && (
-                        <span style={{ color: 'var(--color-error)', fontSize: '0.75rem' }}>Error</span>
+                        <span className="text-destructive text-xs flex items-center gap-1">
+                            <AlertCircle size={14} /> Error
+                        </span>
                     )}
-                    <button
+
+                    {/* Save Button */}
+                    <Button
                         onClick={handleSave}
                         disabled={isPending}
-                        className="btn btn-primary"
-                        style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
+                        size="sm"
+                        className="gap-2"
                     >
-                        {isPending ? 'Saving...' : 'Save'}
-                    </button>
+                        <Save size={14} />
+                        {!isMobile && (isPending ? 'Saving...' : 'Save')}
+                    </Button>
                 </div>
             </div>
 
+            {/* Mobile Subject/Preheader Inputs */}
+            {isMobile && (
+                <div className="px-4 py-3 border-b border-border bg-muted/30 space-y-2">
+                    <Input
+                        value={subject}
+                        onChange={(e) => { setSubject(e.target.value); setSaveStatus('idle'); }}
+                        placeholder="Subject Line..."
+                        className="h-9"
+                    />
+                    <Input
+                        value={preheader}
+                        onChange={(e) => { setPreheader(e.target.value); setSaveStatus('idle'); }}
+                        placeholder="Preheader..."
+                        className="h-9"
+                    />
+                </div>
+            )}
+
             {/* Editor Area */}
-            <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-                {/* Code Editor */}
-                {(viewMode === 'code' || viewMode === 'split') && (
-                    <div style={{
-                        flex: viewMode === 'split' ? 1 : 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        borderRight: viewMode === 'split' ? '1px solid var(--color-border)' : 'none',
-                        minWidth: 0
-                    }}>
-                        <div style={{
-                            padding: '0.5rem 1rem',
-                            background: 'var(--color-bg-secondary)',
-                            borderBottom: '1px solid var(--color-border)',
-                            fontSize: '0.7rem',
-                            fontWeight: 600,
-                            color: 'var(--color-text-muted)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em'
-                        }}>
+            <div className="flex-1 flex overflow-hidden">
+                {/* Code Editor - Hidden on mobile */}
+                {!isMobile && (viewMode === 'code' || viewMode === 'split') && (
+                    <div className={cn(
+                        "flex flex-col min-w-0",
+                        viewMode === 'split' ? "flex-1 border-r border-border" : "flex-1"
+                    )}>
+                        <div className="px-4 py-2 bg-muted border-b border-border text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                            <Code size={12} />
                             HTML Source
                         </div>
-                        <div style={{ flex: 1, position: 'relative' }}>
+                        <div className="flex-1 relative">
                             <Editor
                                 height="100%"
                                 defaultLanguage="html"
@@ -245,57 +332,26 @@ export default function IssueEditor({ issue, initialHtml }: {
                 )}
 
                 {/* Live Preview */}
-                {/* Live Preview */}
-                {(viewMode === 'preview' || viewMode === 'split') && (
-                    <div style={{
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        background: '#f3f4f6',
-                        minWidth: 0
-                    }}>
-                        <div style={{
-                            padding: '0.5rem 1rem',
-                            background: 'white',
-                            borderBottom: '1px solid var(--color-border)',
-                            fontSize: '0.7rem',
-                            fontWeight: 600,
-                            color: 'var(--color-text-muted)',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                            zIndex: 10
-                        }}>
-                            <span>Live Preview</span>
-                            <span style={{ fontWeight: 400 }}>{deviceMode === 'mobile' ? '375px' : '100%'}</span>
+                {(viewMode === 'preview' || viewMode === 'split' || isMobile) && (
+                    <div className="flex-1 flex flex-col bg-muted min-w-0">
+                        <div className="px-4 py-2 bg-card border-b border-border text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                                <Eye size={12} />
+                                Live Preview
+                            </span>
+                            <span className="font-normal">{isMobile ? '100%' : (deviceMode === 'mobile' ? '375px' : '100%')}</span>
                         </div>
-                        <div style={{
-                            flex: 1,
-                            padding: '0', // No padding for full height feel
-                            overflow: 'hidden', // Disable parent scroll
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            background: '#e5e7eb'
-                        }}>
-                            <div style={{
-                                width: previewWidth,
-                                height: '100%', // Full height
-                                background: 'white',
-                                boxShadow: '0 0 20px rgba(0,0,0,0.1)',
-                                transition: 'width 0.3s ease'
-                            }}>
+                        <div className="flex-1 overflow-hidden flex justify-center items-center bg-accent/30 p-4">
+                            <div
+                                className={cn(
+                                    "h-full bg-white shadow-xl transition-all duration-300 rounded-sm",
+                                    isMobile && "w-full shadow-none"
+                                )}
+                                style={{ width: isMobile ? '100%' : previewWidth }}
+                            >
                                 <iframe
                                     srcDoc={previewContent}
-                                    style={{
-                                        width: '100%',
-                                        height: '100%', // Full height
-                                        border: 'none',
-                                        display: 'block',
-                                        background: 'white'
-                                    }}
+                                    className="w-full h-full border-0 block bg-white"
                                     title="Email Preview"
                                 />
                             </div>
@@ -306,4 +362,3 @@ export default function IssueEditor({ issue, initialHtml }: {
         </div>
     );
 }
-

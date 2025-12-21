@@ -22,6 +22,7 @@ import {
     DesignerInput,
     FinalizerInput
 } from "./agents";
+import { AiConfig } from "./ai";
 
 interface GenerationSettings {
     images: { mode: 'random' | 'manual'; urls: string[] };
@@ -64,9 +65,16 @@ export interface BrandData {
 export async function generateNewsletterForBrand(brandId: string): Promise<string> {
     const brand = await db.brand.findUnique({
         where: { id: brandId },
-        include: { brandVoice: true }
+        include: { brandVoice: true, user: { include: { aiSettings: true } } }
     });
     if (!brand) throw new Error("Brand not found");
+
+    // Fetch AI settings from user (if configured)
+    const userAiSettings = brand.user?.aiSettings;
+    const aiConfig: AiConfig | undefined = userAiSettings ? {
+        apiKey: userAiSettings.googleApiKey,
+        model: userAiSettings.model
+    } : undefined;
 
     console.log("\n╔════════════════════════════════════════════════════════╗");
     console.log("║         5-AGENT NEWSLETTER GENERATION PIPELINE         ║");
@@ -74,6 +82,9 @@ export async function generateNewsletterForBrand(brandId: string): Promise<strin
     console.log(`\n🏢 Brand: ${brand.name}`);
     console.log(`📂 Category: ${brand.category || 'General'}`);
     console.log(`🎯 Audience: ${brand.audience || 'General'}`);
+    if (aiConfig?.apiKey) {
+        console.log(`🔑 Using custom AI settings (model: ${aiConfig.model || 'default'})`);
+    }
 
     const settings = brand.settings ? (brand.settings as unknown as GenerationSettings) : defaultSettings;
 
