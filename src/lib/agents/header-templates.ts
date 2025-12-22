@@ -62,7 +62,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:32px;font-weight:800;color:{{primaryColor}};mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>
@@ -123,7 +123,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:32px;line-height:38px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>
@@ -192,7 +192,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:26px;line-height:30px;font-weight:800;color:{{primaryColor}};mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>
@@ -255,7 +255,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="center" style="font-family:Georgia,'Times New Roman',Times,serif;font-size:32px;line-height:38px;font-weight:700;color:{{primaryColor}};mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>
@@ -327,7 +327,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:32px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>
@@ -396,7 +396,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:22px;line-height:26px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>
@@ -453,7 +453,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px;margin:0 auto;">
         <tr>
           <td align="left" valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:28px;font-weight:800;color:{{primaryColor}};mso-line-height-rule:exactly;">
-            {{brandLogo}}
+            {{brandName}}
           </td>
           <td align="right" valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#9CA3AF;">
             {{date}}
@@ -505,7 +505,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:36px;line-height:42px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandLogo}}
+                  {{brandName}}
                 </td>
               </tr>
             </table>

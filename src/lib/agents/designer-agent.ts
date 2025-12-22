@@ -29,119 +29,79 @@ export interface DesignerOutput {
   preheader: string;
 }
 
-const BODY_CONTENT_PROMPT = `You are a WORLD-CLASS email newsletter designer. Create a visually stunning Morning Brew / The Hustle style newsletter.
- 
- BRAND: {{brandName}} | CATEGORY: {{brandCategory}}
- PRIMARY: {{primaryColor}} | ACCENT: {{accentColor}}
- 
- CONTENT:
- {{writerContent}}
- 
- ## DESIGN SYSTEM
- 
- ### TYPOGRAPHY
- - Section Title: font-family:Georgia,serif; font-size:26px; font-weight:700; color:{{primaryColor}}; line-height:1.3;
- - Subsection: font-family:Arial,sans-serif; font-size:18px; font-weight:700; color:{{accentColor}}; margin:24px 0 12px 0;
- - Body: font-family:Arial,sans-serif; font-size:16px; line-height:1.75; color:#374151;
- - Label: font-family:Arial,sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9CA3AF;
- 
- ### CARDS (Each section is a card)
- <tr><td style="padding:32px 28px;background:#FFFFFF;border-radius:16px;border:1px solid #E5E7EB;margin-bottom:24px;">
-   ...content...
- </td></tr>
- <tr><td height="24"></td></tr>
- 
- ### CALLOUT BOX (Use for key insights)
- <table role="presentation" width="100%" style="margin:20px 0;"><tr>
-   <td style="background:#F8FAFC;border-left:4px solid {{accentColor}};padding:16px 20px;border-radius:0 8px 8px 0;">
-     <p style="margin:0;font-size:15px;line-height:1.6;color:#475569;"><strong style="color:{{primaryColor}};">💡 Key Insight:</strong> [insight text]</p>
-   </td>
- </tr></table>
- 
- ### STAT HIGHLIGHT (Use for big numbers)
- <table role="presentation" width="100%" style="margin:24px 0;"><tr>
-   <td align="center" style="padding:24px;background:linear-gradient(135deg,{{primaryColor}} 0%,{{accentColor}} 100%);border-radius:12px;">
-     <p style="margin:0;font-size:42px;font-weight:800;color:#FFFFFF;line-height:1;">85%</p>
-     <p style="margin:8px 0 0 0;font-size:14px;color:rgba(255,255,255,0.9);">of users reported improvement</p>
-   </td>
- </tr></table>
- 
- ### IMAGE PLACEHOLDER
- <table role="presentation" width="100%" style="margin:24px 0;"><tr><td>
-   <div style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border-radius:12px;padding:48px 24px;text-align:center;">
-     <p style="margin:0 0 8px 0;font-size:14px;font-weight:600;color:#94a3b8;letter-spacing:1px;">📷 IMAGE PLACEHOLDER</p>
-     <p style="margin:0;font-size:13px;color:#64748b;">[Description] • 560×320px recommended</p>
-   </div>
- </td></tr></table>
- 
- ### DIVIDER
- <table role="presentation" width="100%" style="margin:24px 0;"><tr>
-   <td height="1" style="background:linear-gradient(90deg,transparent 0%,#E5E7EB 20%,#E5E7EB 80%,transparent 100%);"></td>
- </tr></table>
- 
- ### BULLET LIST
- <table role="presentation" width="100%" style="margin:16px 0;"><tr>
-   <td width="24" valign="top" style="color:{{accentColor}};font-size:18px;line-height:1.6;">•</td>
-   <td style="font-size:16px;line-height:1.6;color:#374151;padding-left:8px;">[List item text]</td>
- </tr></table>
- 
- ### CTA BUTTON
- <table role="presentation" align="center" style="margin:32px auto;"><tr>
-   <td style="background:{{accentColor}};border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,0.12);">
-     <a href="#" style="display:block;padding:16px 40px;font-family:Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;">Explore Now →</a>
-   </td>
- </tr></table>
- 
- ## SECTIONS TO CREATE
- 
- **SECTION 3 - Opening** (80-120 words)
- - Light greeting with emoji
- - What's in this issue (bullets)
- - Hook sentence
- 
- **SECTION 4 - Deep Dive** (400-600 words)
- - Compelling title with emoji prefix
- - 3-4 subsections with subheaders
- - Include 1 STAT HIGHLIGHT
- - Include 1 CALLOUT BOX
- - Include 1 IMAGE PLACEHOLDER
- - End with Key Takeaways (bullet list)
- 
- **SECTION 5 - Quick Hits** (200-300 words)
- - 3-5 news items with emoji prefix
- - Each: Bold title + 2-3 sentence summary
- - Include 1 IMAGE PLACEHOLDER
- 
- **SECTION 6 - Tip of Week** (150-250 words)
- - Practical, actionable tip
- - Why it matters
- - How to implement
- 
- **SECTION 7 - Personal Note** (100-150 words)
- - Conversational tone
- - Behind-the-scenes insight
- - Question to readers
- 
- **SECTION 8 - CTA** 
- - Compelling 1-line headline
- - Value prop sentence
- - Premium CTA button
- 
- **SECTION 9 - Quick Links**
- - 2-3 resource links
- 
- ## RULES
- 1. Output ONLY table-based HTML
- 2. Every element has inline CSS
- 3. Use patterns from Design System above
- 4. Minimum 1000 words
- 5. 2 image placeholders
- 6. 1 stat highlight
- 7. 1 callout box
- 8. No DOCTYPE/html/head/body tags
- 9. Start with <table>
- 
- Generate premium body HTML now:`;
+const BODY_CONTENT_PROMPT = `You are a WORLD-CLASS email newsletter BODY designer.
+
+⚠️ CRITICAL: You are generating ONLY the MIDDLE BODY CONTENT.
+- A header with brand name and date is ALREADY added separately - DO NOT create one
+- A footer with unsubscribe links is ALREADY added separately - DO NOT create one
+
+BRAND: {{brandName}} | CATEGORY: {{brandCategory}}
+PRIMARY: {{primaryColor}} | ACCENT: {{accentColor}}
+
+CONTENT:
+{{writerContent}}
+
+## ⛔ FORBIDDEN ELEMENTS - NEVER INCLUDE THESE:
+- NO masthead/header banners (no "THE WEEKLY DISPATCH", no brand name banner, no date header)
+- NO footer sections (no copyright ©, no "you are receiving this", no unsubscribe, no address)
+- NO full-width colored banners at start or end
+- These are handled externally - you ONLY create body cards
+
+## ✅ YOUR FIRST ELEMENT MUST BE:
+A greeting card starting with "Hey [audience], 👋" - nothing before it
+
+## DESIGN SYSTEM
+
+### TYPOGRAPHY
+- Section Title: font-family:Georgia,serif; font-size:26px; font-weight:700; color:{{primaryColor}};
+- Subsection: font-family:Arial,sans-serif; font-size:18px; font-weight:700; color:{{accentColor}};
+- Body: font-family:Arial,sans-serif; font-size:16px; line-height:1.75; color:#374151;
+
+### CARD STRUCTURE
+<tr><td style="padding:32px 28px;background:#FFFFFF;border-radius:16px;border:1px solid #E5E7EB;">
+  ...content...
+</td></tr>
+<tr><td height="24"></td></tr>
+
+### CALLOUT BOX
+<table role="presentation" width="100%" style="margin:20px 0;"><tr>
+  <td style="background:#F8FAFC;border-left:4px solid {{accentColor}};padding:16px 20px;border-radius:0 8px 8px 0;">
+    <p style="margin:0;font-size:15px;color:#475569;"><strong style="color:{{primaryColor}};">💡 Key Insight:</strong> [text]</p>
+  </td>
+</tr></table>
+
+### STAT HIGHLIGHT
+<table role="presentation" width="100%" style="margin:24px 0;"><tr>
+  <td align="center" style="padding:24px;background:linear-gradient(135deg,{{primaryColor}} 0%,{{accentColor}} 100%);border-radius:12px;">
+    <p style="margin:0;font-size:42px;font-weight:800;color:#FFFFFF;">NUMBER</p>
+    <p style="margin:8px 0 0 0;font-size:14px;color:rgba(255,255,255,0.9);">description</p>
+  </td>
+</tr></table>
+
+### CTA BUTTON
+<table role="presentation" align="center" style="margin:32px auto;"><tr>
+  <td style="background:{{accentColor}};border-radius:10px;">
+    <a href="#" style="display:block;padding:16px 40px;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;">Button →</a>
+  </td>
+</tr></table>
+
+## BODY SECTIONS TO CREATE (7 cards total)
+
+1. **Opening Card** - "Hey [audience], 👋" greeting, what's inside, hook
+2. **Deep Dive Card** - Main article with subsections, 1 stat highlight, 1 callout box
+3. **Quick Hits Card** - 3-5 news items with emoji prefixes
+4. **Tip Card** - Actionable tip with steps
+5. **Personal Note Card** - Conversational behind-the-scenes
+6. **CTA Card** - Call to action with button
+7. **Quick Links Card** - 2-3 resource links (THIS IS YOUR LAST ELEMENT)
+
+## OUTPUT RULES
+1. Table-based HTML only, inline CSS only
+2. Start with <table> containing the greeting card
+3. End with the quick links card - NOTHING AFTER IT
+4. ⛔ NEVER add: header banner, footer, copyright, unsubscribe text
+
+Generate body HTML now, starting directly with the greeting card:`;
 
 export async function executeDesignerAgent(input: DesignerInput): Promise<DesignerOutput> {
   const { brand, content, colors, colorPalette } = input;
@@ -157,23 +117,26 @@ export async function executeDesignerAgent(input: DesignerInput): Promise<Design
   const randomHeader = HEADER_TEMPLATES[Math.floor(Math.random() * HEADER_TEMPLATES.length)];
   const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-  const logoHtml = `<img src="/newzly-logo.png" alt="${brand.name} Logo" style="max-width:200px;height:auto;display:block;border:0;">`;
-
   const headerHtml = randomHeader.html
     .replace(/\{\{brandName\}\}/g, brand.name)
-    .replace(/\{\{brandLogo\}\}/g, logoHtml)
     .replace(/\{\{primaryColor\}\}/g, dynamicColors.primary)
     .replace(/\{\{secondaryColor\}\}/g, dynamicColors.secondary)
     .replace(/\{\{accentColor\}\}/g, dynamicColors.accent)
     .replace(/\{\{date\}\}/g, currentDate)
     .replace(/\{\{subject\}\}/g, content.subjectLines[0] || `${brand.name} Newsletter`);
 
+  // Strip markdown section headers to prevent AI from rendering them as duplicate headers
+  const sanitizedContent = content.rawContent
+    .replace(/^#\s*SECTION\s*\d+[:\s]+[^\n]+\n*/gim, '')
+    .replace(/^#+\s+/gim, '**')  // Convert remaining markdown headers to bold
+    .trim();
+
   const prompt = BODY_CONTENT_PROMPT
     .replace(/\{\{brandName\}\}/g, brand.name)
     .replace(/\{\{brandCategory\}\}/g, brand.category || 'General')
     .replace(/\{\{primaryColor\}\}/g, dynamicColors.primary)
     .replace(/\{\{accentColor\}\}/g, dynamicColors.accent)
-    .replace(/\{\{writerContent\}\}/g, content.rawContent);
+    .replace(/\{\{writerContent\}\}/g, sanitizedContent);
 
   console.log("\n╔══════════════════════════════════════╗");
   console.log("║       AGENT 4: DESIGNER AGENT        ║");
@@ -186,6 +149,14 @@ export async function executeDesignerAgent(input: DesignerInput): Promise<Design
 
   let bodyContent = await generateText(prompt);
   bodyContent = bodyContent.replace(/```html\s*/gi, '').replace(/```\s*/g, '').trim();
+
+  // SAFETY NET: Strip any AI-generated headers/footers that slipped through
+  bodyContent = bodyContent
+    // Remove header banners with "weekly dispatch", "newsletter", or brand name in colored backgrounds
+    .replace(/<table[^>]*>[\s\S]*?(?:weekly\s*dispatch|masthead|newsletter\s*header)[\s\S]*?<\/table>/gi, '')
+    // Remove footer sections with copyright, unsubscribe, or "receiving this"
+    .replace(/<table[^>]*>[\s\S]*?(?:©\s*\d{4}|copyright|unsubscribe|you\s*(?:are|\'re)\s*receiving|signed\s*up\s*for|all\s*rights\s*reserved)[\s\S]*?<\/table>/gi, '')
+    .trim();
 
   const completeHtml = buildCompleteEmail(headerHtml, bodyContent, brand, dynamicColors);
 

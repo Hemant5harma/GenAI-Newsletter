@@ -159,18 +159,17 @@ export default function Sidebar({ brands }: { brands: Brand[] }) {
                     showLabels ? "px-5 justify-start" : "px-2 justify-center"
                 )}>
                     <Link href="/" className="flex items-center gap-2.5 group">
-                        <div className={cn(
-                            "flex items-center justify-center rounded-xl shrink-0",
-                            "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500",
-                            "shadow-lg shadow-purple-500/25",
-                            "transition-transform group-hover:scale-105",
-                            showLabels ? "w-9 h-9" : "w-10 h-10"
-                        )}>
-                            <Sparkles size={showLabels ? 18 : 20} className="text-white" />
-                        </div>
+                        <img
+                            src="/newzly-logo.png"
+                            alt="Newzly Logo"
+                            className={cn(
+                                "shrink-0 transition-transform group-hover:scale-105",
+                                showLabels ? "h-9 w-auto" : "h-10 w-auto"
+                            )}
+                        />
                         {showLabels && (
                             <span className="font-bold text-base tracking-tight">
-                                AutoNews
+                                Newzly
                             </span>
                         )}
                     </Link>
