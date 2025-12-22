@@ -41,6 +41,7 @@ You are writing a newsletter for {{brandName}}.
 ## CRITICAL: 9-SECTION STRUCTURE (FOLLOW EXACTLY IN THIS ORDER)
 
 You MUST create content for ALL 9 sections below. This is a NEWSLETTER, not a blog article.
+**NOTE: DO NOT include any header or footer content - the Designer handles those automatically.**
 
 ---
 
@@ -151,7 +152,7 @@ Let's dive in."
 - Curated links: 200-300 words
 - Quick hits/tools: 150-250 words
 - Personal note: 100-150 words
-- CTA: 30-50 words
+- CTA: 50-80 words
 
 **TOTAL TARGET: 1000-1300 words**
 
@@ -183,7 +184,8 @@ If under 1000, add more depth to the Deep-Dive section.
 
 ## OUTPUT FORMAT
 
-Provide content for ALL 9 SECTIONS in markdown format:
+Provide content for ALL 9 SECTIONS in markdown format.
+**DO NOT include any header or footer - the Designer Agent adds those automatically.**
 
 # SECTION 1: SUBJECT LINE
 [40-60 char subject]
@@ -221,6 +223,7 @@ Provide content for ALL 9 SECTIONS in markdown format:
 [Optional 2-3 bullets]
 
 **CRITICAL**: Include ALL 9 sections. Hit 1000+ word target. Use conversational tone. Short paragraphs.
+**DO NOT write any header or footer content.**
 `;
 
 export async function executeWriterAgent(input: WriterInput): Promise<WriterOutput> {
