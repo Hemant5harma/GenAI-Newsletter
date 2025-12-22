@@ -8,7 +8,7 @@ export interface AiConfig {
 
 // --- FALLBACK TO ENV ---
 const envApiKey = process.env.GOOGLE_API_KEY;
-const defaultModel = "gemini-2.0-flash-exp";
+const defaultModel = "gemini-3-flash-preview";
 
 // --- DYNAMIC MODEL CREATION ---
 function getGenAI(config?: AiConfig): GoogleGenerativeAI {

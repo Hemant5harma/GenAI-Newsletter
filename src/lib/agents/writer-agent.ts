@@ -38,9 +38,9 @@ This is a HARD requirement - do not submit content under 1000 words.
 
 You are writing a newsletter for {{brandName}}.
 
-## CRITICAL: 11-SECTION STRUCTURE (FOLLOW EXACTLY IN THIS ORDER)
+## CRITICAL: 9-SECTION STRUCTURE (FOLLOW EXACTLY IN THIS ORDER)
 
-You MUST create content for ALL 11 sections below. This is a NEWSLETTER, not a blog article.
+You MUST create content for ALL 9 sections below. This is a NEWSLETTER, not a blog article.
 
 ---
 
@@ -57,17 +57,7 @@ You MUST create content for ALL 11 sections below. This is a NEWSLETTER, not a b
 - Summary of what's inside
 - Example: "Plus 4 tools to debug latency in production"
 
-### SECTION 3: HEADER AREA
-**CRITICAL: Output ONLY the brand name and date - NO "Newsletter" text, NO domain!**
-
-- Output format: "{{brandName}} | [Date]"
-- Example: "eloancompare | December 17, 2025"
-- The Designer will handle the visual presentation (colored bar, styling, etc.)
-- Just provide the text content here
-- NO domain name (no .com, .io, etc.)
-- NO extra text like "Newsletter" or "Weekly" - just brand name + date
-
-### SECTION 4: OPENING GREETING & HOOK (80-120 words)
+### SECTION 3: OPENING GREETING & HOOK (80-120 words)
 **Requirements**:
 - Start: "Hey [audience]," or similar
 - Hook: Reference a recent trend/problem the audience cares about
@@ -83,7 +73,7 @@ In this issue:
 • Quick tips for [specific problem]
 Let's dive in."
 
-### SECTION 5: FEATURED DEEP-DIVE ARTICLE (400-600 words) **CORE SECTION**
+### SECTION 4: FEATURED DEEP-DIVE ARTICLE (400-600 words) **CORE SECTION**
 **This is the MAIN content - most important section!**
 
 **Structure**:
@@ -101,7 +91,7 @@ Let's dive in."
 - Provide actionable information
 - Total: 400-600 words
 
-### SECTION 6: CURATED LINKS / NEWS (200-300 words)
+### SECTION 5: CURATED LINKS / NEWS (200-300 words)
 **Title**: "This Week's Signals" or "Links Worth Your Time"
 
 **Include 3-5 items, each with**:
@@ -111,7 +101,7 @@ Let's dive in."
 
 **Total**: 200-300 words across all items
 
-### SECTION 7: QUICK HITS / TOOLS (150-250 words)
+### SECTION 6: QUICK HITS / TOOLS (150-250 words)
 **Include AT LEAST ONE**:
 
 **Option A - Quick Tips**:
@@ -129,7 +119,7 @@ Let's dive in."
 
 **Total**: 150-250 words
 
-### SECTION 8: PERSONAL NOTE (100-150 words) **RECOMMENDED**
+### SECTION 7: PERSONAL NOTE (100-150 words) **RECOMMENDED**
 **Build connection with readers**:
 - What you're experimenting with
 - Behind-the-scenes detail
@@ -138,7 +128,7 @@ Let's dive in."
 
 **Total**: 100-150 words
 
-### SECTION 9: PRIMARY CALL-TO-ACTION (CTA)
+### SECTION 8: PRIMARY CALL-TO-ACTION (CTA)
 **ONE clear, specific action**:
 - Examples:
   * "Reply with your biggest [problem]"
@@ -147,18 +137,10 @@ Let's dive in."
 - 1-2 sentences context + CTA line
 - ONLY ONE primary CTA (no confusion)
 
-### SECTION 10: SECONDARY LINKS (OPTIONAL)
+### SECTION 9: SECONDARY LINKS (OPTIONAL)
 **2-3 short bullets**:
 - Each: Title + 1 sentence explanation
 - Examples: blog, product, YouTube, social
-
-### SECTION 11: FOOTER
-**Include**:
-- Brand name: {{brandName}}
-- Website: {{brandDomain}}
-- Social links (mention platforms)
-- "Unsubscribe or manage preferences"
-- Keep concise
 
 ---
 
@@ -169,7 +151,7 @@ Let's dive in."
 - Curated links: 200-300 words
 - Quick hits/tools: 150-250 words
 - Personal note: 100-150 words
-- CTA + footer: 80-120 words combined
+- CTA: 30-50 words
 
 **TOTAL TARGET: 1000-1300 words**
 
@@ -201,7 +183,7 @@ If under 1000, add more depth to the Deep-Dive section.
 
 ## OUTPUT FORMAT
 
-Provide content for ALL 11 SECTIONS in markdown format:
+Provide content for ALL 9 SECTIONS in markdown format:
 
 # SECTION 1: SUBJECT LINE
 [40-60 char subject]
@@ -209,13 +191,10 @@ Provide content for ALL 11 SECTIONS in markdown format:
 # SECTION 2: PREHEADER
 [40-80 char preheader]
 
-# SECTION 3: HEADER
-{{brandName}} | [Date]
-
-# SECTION 4: OPENING GREETING & HOOK
+# SECTION 3: OPENING GREETING & HOOK
 [80-120 words]
 
-# SECTION 5: DEEP-DIVE ARTICLE
+# SECTION 4: DEEP-DIVE ARTICLE
 ## [Article Title]
 [400-600 words with subsections]
 
@@ -224,27 +203,24 @@ Provide content for ALL 11 SECTIONS in markdown format:
 - [bullet 2]
 - [bullet 3]
 
-# SECTION 6: CURATED LINKS
+# SECTION 5: CURATED LINKS
 ## This Week's Signals
 [3-5 items, 200-300 words total]
 
-# SECTION 7: QUICK HITS
+# SECTION 6: QUICK HITS
 ## [Quick Tips / Tool of Week / Code Corner]
 [150-250 words]
 
-# SECTION 8: PERSONAL NOTE
+# SECTION 7: PERSONAL NOTE
 [100-150 words]
 
-# SECTION 9: PRIMARY CTA
+# SECTION 8: PRIMARY CTA
 [Call to action]
 
-# SECTION 10: SECONDARY LINKS
+# SECTION 9: SECONDARY LINKS
 [Optional 2-3 bullets]
 
-# SECTION 11: FOOTER
-{{brandName}} | {{brandDomain}} | Unsubscribe
-
-**CRITICAL**: Include ALL 11 sections. Hit 1000+ word target. Use conversational tone. Short paragraphs.
+**CRITICAL**: Include ALL 9 sections. Hit 1000+ word target. Use conversational tone. Short paragraphs.
 `;
 
 export async function executeWriterAgent(input: WriterInput): Promise<WriterOutput> {

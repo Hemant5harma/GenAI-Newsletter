@@ -18,18 +18,18 @@
  */
 
 export interface HeaderTemplate {
-    id: string;
-    name: string;
-    html: string;
-    description: string;
+  id: string;
+  name: string;
+  html: string;
+  description: string;
 }
 
 export const HEADER_TEMPLATES: HeaderTemplate[] = [
-    {
-        id: "minimal-luxe",
-        name: "Minimal Luxe",
-        description: "Clean white card with accent underline. Professional and responsive.",
-        html: `
+  {
+    id: "minimal-luxe",
+    name: "Minimal Luxe",
+    description: "Clean white card with accent underline. Professional and responsive.",
+    html: `
 <!-- ====== START HEADER: Minimal Luxe ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -62,7 +62,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:32px;font-weight:800;color:{{primaryColor}};mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -98,12 +98,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Minimal Luxe ====== -->
 `
-    },
-    {
-        id: "bold-brand",
-        name: "Bold Brand",
-        description: "Strong colored header with white text. High impact, mobile friendly.",
-        html: `
+  },
+  {
+    id: "bold-brand",
+    name: "Bold Brand",
+    description: "Strong colored header with white text. High impact, mobile friendly.",
+    html: `
 <!-- ====== START HEADER: Bold Brand ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -123,7 +123,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:32px;line-height:38px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -151,12 +151,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Bold Brand ====== -->
 `
-    },
-    {
-        id: "left-accent-rail",
-        name: "Left Accent Rail",
-        description: "Modern with thick accent bar on left. Works everywhere.",
-        html: `
+  },
+  {
+    id: "left-accent-rail",
+    name: "Left Accent Rail",
+    description: "Modern with thick accent bar on left. Works everywhere.",
+    html: `
 <!-- ====== START HEADER: Left Accent Rail ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -192,7 +192,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:26px;line-height:30px;font-weight:800;color:{{primaryColor}};mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -220,12 +220,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Left Accent Rail ====== -->
 `
-    },
-    {
-        id: "centered-editorial",
-        name: "Centered Editorial",
-        description: "Magazine-style centered layout. Classic and elegant.",
-        html: `
+  },
+  {
+    id: "centered-editorial",
+    name: "Centered Editorial",
+    description: "Magazine-style centered layout. Classic and elegant.",
+    html: `
 <!-- ====== START HEADER: Centered Editorial ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -255,7 +255,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="center" style="font-family:Georgia,'Times New Roman',Times,serif;font-size:32px;line-height:38px;font-weight:700;color:{{primaryColor}};mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -289,12 +289,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Centered Editorial ====== -->
 `
-    },
-    {
-        id: "dark-modern",
-        name: "Dark Modern",
-        description: "Dark background with accent color highlights. Premium feel.",
-        html: `
+  },
+  {
+    id: "dark-modern",
+    name: "Dark Modern",
+    description: "Dark background with accent color highlights. Premium feel.",
+    html: `
 <!-- ====== START HEADER: Dark Modern ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -327,7 +327,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:32px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -363,12 +363,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Dark Modern ====== -->
 `
-    },
-    {
-        id: "split-tone",
-        name: "Split Tone",
-        description: "Two-tone split design. Brand color left, content right.",
-        html: `
+  },
+  {
+    id: "split-tone",
+    name: "Split Tone",
+    description: "Two-tone split design. Brand color left, content right.",
+    html: `
 <!-- ====== START HEADER: Split Tone ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -396,7 +396,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="font-family:Arial,Helvetica,sans-serif;font-size:22px;line-height:26px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -432,12 +432,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Split Tone ====== -->
 `
-    },
-    {
-        id: "simple-clean",
-        name: "Simple Clean",
-        description: "Minimalist single-row header. Maximum compatibility.",
-        html: `
+  },
+  {
+    id: "simple-clean",
+    name: "Simple Clean",
+    description: "Minimalist single-row header. Maximum compatibility.",
+    html: `
 <!-- ====== START HEADER: Simple Clean ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -453,7 +453,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px;margin:0 auto;">
         <tr>
           <td align="left" valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:28px;font-weight:800;color:{{primaryColor}};mso-line-height-rule:exactly;">
-            {{brandName}}
+            {{brandLogo}}
           </td>
           <td align="right" valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#9CA3AF;">
             {{date}}
@@ -471,12 +471,12 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Simple Clean ====== -->
 `
-    },
-    {
-        id: "gradient-banner",
-        name: "Gradient Banner",
-        description: "Full-width banner with subtle gradient effect.",
-        html: `
+  },
+  {
+    id: "gradient-banner",
+    name: "Gradient Banner",
+    description: "Full-width banner with subtle gradient effect.",
+    html: `
 <!-- ====== START HEADER: Gradient Banner ====== -->
 <!--[if mso]>
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px;">
@@ -505,7 +505,7 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:36px;line-height:42px;font-weight:800;color:#FFFFFF;mso-line-height-rule:exactly;">
-                  {{brandName}}
+                  {{brandLogo}}
                 </td>
               </tr>
             </table>
@@ -532,5 +532,5 @@ export const HEADER_TEMPLATES: HeaderTemplate[] = [
 <![endif]-->
 <!-- ====== END HEADER: Gradient Banner ====== -->
 `
-    }
+  }
 ];
