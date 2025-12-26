@@ -31,7 +31,8 @@ export interface FinalizerOutput {
 }
 
 const ANALYSIS_PROMPT = `
-You are an Email Deliverability Expert. Analyze this newsletter HTML and provide a quality report.
+You are the QA Gatekeeper for a premium newsletter. 
+Your Job: Find any "AI Slop", Broken Elements, or Spam Triggers.
 
 ## BRAND
 - Brand: {{brandName}}
@@ -40,22 +41,27 @@ You are an Email Deliverability Expert. Analyze this newsletter HTML and provide
 
 {{htmlContent}}
 
-## YOUR TASK
-Analyze the HTML above and provide ONLY a JSON report. Do NOT output any HTML.
-
-Check for:
-1. SPAM TRIGGERS: ALL CAPS, excessive punctuation, spammy phrases
-2. ACCESSIBILITY: alt text, font sizes, color contrast
-3. STRUCTURE: proper DOCTYPE, responsive design, valid HTML
+## DETECT THESE SPECIFIC FAILURES:
+1. **The "Lorem Ipsum" Check**: Look for "Insert text here", "[Date]", "Image Placeholder" (if not styled as such), or "Input content".
+2. **Broken Links**: Look for "example.com", "#", or "javascript:void(0)" in main CTAs.
+3. **Spam Triggers**: "ACT NOW", "FREE", "CLICK HERE", excessive exclamation marks!!!
+4. **Style Consistency**: Are headers using the brand font? (Guess based on inline styles).
 
 ## OUTPUT FORMAT (JSON ONLY)
 {
-  "spamScore": <number 0-100, lower is better>,
-  "issues": ["issue1", "issue2"],
-  "suggestions": ["suggestion1", "suggestion2"]
+  "spamScore": <number 0-100, 0 is perfect, 100 is spam>,
+  "issues": [
+      "CRITICAL: Found 'Insert text here' in section 3.",
+      "WARNING: Primary CTA links to '#'.",
+      "INFO: Subject line is 65 chars (optimal is 40-60)."
+  ],
+  "suggestions": [
+      "Replace '#' with actual {{brandDomain}}.",
+      "Shorten subject line."
+  ]
 }
 
-Output ONLY the JSON object, nothing else.
+Output ONLY the JSON object.
 `;
 
 export async function executeFinalizerAgent(input: FinalizerInput): Promise<FinalizerOutput> {

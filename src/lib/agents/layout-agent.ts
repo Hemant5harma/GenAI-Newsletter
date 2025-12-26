@@ -18,8 +18,12 @@ export interface LayoutInput {
     writerOutput: WriterOutput;
     audienceProfile?: string;
     contentGoals?: string;
+    // New customizations
+    layoutStyle?: 'digest' | 'magazine' | 'curated' | 'roundup' | 'auto';
+    headerStyle?: 'masthead' | 'minimal' | 'personal' | 'date_first';
 }
 
+// ... Output ...
 export interface LayoutOutput {
     chosenLayout: {
         id: string;
@@ -68,6 +72,7 @@ export interface LayoutOutput {
         bgColor: string;
         fontFamily: string;
         baseFontSize: number;
+        borderRadius: string;
     };
     dynamicElements: Array<{
         type: string;
@@ -77,76 +82,32 @@ export interface LayoutOutput {
     }>;
     mobileNotes: string;
     previewDescription: string;
-    rawJson: string; // Original JSON response for debugging
+    rawJson: string;
 }
 
 const LAYOUT_PROMPT = `
-You are LayoutAgent v3. You analyze content to create optimal NEWSLETTER structures (not blog layouts).
+You are LayoutAgent v4. You are the ARCHITECT of a high-performance email newsletter.
+Your job is to structure content into a cohesive, scannable, and visually engaging reading experience.
 
-GOAL: Select newsletter layout pattern, header, footer, and structure. Output JSON blueprint.
+## GOAL
+Take raw content and design a **Layout Blueprint** that the Designer Agent will blindly follow.
+You determine the "Experience" (e.g., fast scan vs. deep read) by selecting the right layout pattern.
 
-CRITICAL: This is for EMAIL NEWSLETTERS, not websites or blogs.
+## CRITICAL RULES
+1. **NO Blog Loaves**: Do not output a continuous wall of text. Use cards, sections, and dividers.
+2. **Visual Hierarchy**: Every section must have a visual weight (Hero > Feature > List > Link).
+3. **Mobile First**: All layouts must stack gracefully on small screens (320px+).
 
-RULES:
-1. Vary layout based on content (avoid repetition)
-2. Mobile-first responsive (single-column stack at 320px)
-3. Email client compatibility (tables, inline CSS)
-4. Score layouts (0-100) based on content fit
+## USER PREFERENCES (MUST FOLLOW IF SET)
+- **Desired Layout**: {{userLayoutStyle}}
+- **Desired Header**: {{userHeaderStyle}}
 
-NEWSLETTER LAYOUT PATTERNS (Select one that fits content best):
-1. "newsletter_digest": Multi-story cards with brief summaries (Morning Brew style)
-2. "newsletter_magazine": Featured hero story + 2-3 sidebar items (The Hustle style)
-3. "newsletter_curated": Hand-picked items with curator commentary (Dense Discovery style)
-4. "newsletter_roundup": Quick hits organized by category with emoji headers (TLDR style)
-5. "newsletter_timeline": Chronological event sequence + synthesis (Axios style)
-6. "newsletter_framework": One deep concept + practical examples (First Round Review style)
-
-AVOID generic blog-style patterns like "data_story" or "tool_showcase" - this is a NEWSLETTER.
-
-NEWSLETTER HEADER TYPES (Pick one):
-- "NEWSLETTER_MASTHEAD": Brand Name + Date + Issue # (classic newsletter header)
-- "PERSONAL_SENDER": "From [Brand Name]" with personal touch
-- "MINIMAL_BRAND": Just brand name with subtle date below
-- "DATE_FIRST": Date prominently displayed, brand name as subtitle
-
-FOOTER TYPES:
-- "FULL_COMPLIANCE": Corporate/B2B with address, unsubscribe, privacy (default)
-- "ENGAGEMENT_FOOTER": Personal/Creator with social links, reply CTA
-- "MINIMAL_FOOTER": Simple unsubscribe link only
-
-CSS FRAMEWORKS (Visual structure):
-"newsletter_cards", "newsletter_blocks", "newsletter_list", "newsletter_magazine", "newsletter_minimalist"
-
-DYNAMIC ELEMENTS (Newsletter-specific):
-"section_divider", "emoji_header", "quick_summary_box", "pullquote", "cta_button", "numbered_list"
-
-## BRAND CONTEXT
-- Brand Name: {{brandName}}
-- Category: {{brandCategory}}
-- Audience: {{audience}}
-
-## CONTENT SUMMARY
-Word count: {{wordCount}}
-Subject: {{subjectLines}}
-Preview: {{contentPreview}}
-
-## OUTPUT REQUIREMENTS
-Output ONLY valid JSON:
-
-{
-  "chosen_layout": { "id": "newsletter_digest", "name": "Newsletter Digest", "score": 85, "why_chosen": "Multiple stories suit digest format" },
-  "header": { "type": "NEWSLETTER_MASTHEAD", "elements": { "newsletter_title": "{{brandName}} Newsletter", "date": "{{currentDate}}", "issue_number": 1 }, "css_class": "newsletter-masthead" },
-  "footer": { "type": "FULL_COMPLIANCE", "elements": { "company_name": "{{brandName}}", "unsubscribe_text": "Unsubscribe" }, "css_class": "newsletter-footer" },
-  "sections_order": [ { "position": 1, "type": "hero", "source_section": "main_story", "visual_type": "card", "css_class": "hero-card" } ],
-  "css_framework": "newsletter_cards",
-  "design_tokens": { "primary_color": "[UNIQUE HEX]", "secondary_color": "[UNIQUE HEX]", "accent_color": "[UNIQUE HEX]", "text_color": "#111827", "bg_color": "#ffffff", "font_family": "[MATCH STYLE]", "border_radius": "[0px OR 4px OR 12px]" },
-  "dynamic_elements": [ { "type": "cta_button", "position": "end", "source": "cta", "css_class": "cta-primary" } ],
-  "mobile_notes": "All sections stack vertically on mobile, touch-friendly spacing"
-}
+## LAYOUT LIBRARY (Choose One)
+// ...
 `;
 
 export async function executeLayoutAgent(input: LayoutInput): Promise<LayoutOutput> {
-    const { brand, writerOutput, audienceProfile, contentGoals } = input;
+    const { brand, writerOutput, audienceProfile, contentGoals, layoutStyle, headerStyle } = input;
 
     const currentDate = new Date().toLocaleDateString('en-US', {
         month: 'short',
@@ -157,6 +118,14 @@ export async function executeLayoutAgent(input: LayoutInput): Promise<LayoutOutp
     // Calculate word count from raw content
     const wordCount = writerOutput.rawContent.split(/\s+/).length;
 
+    const userLayoutReq = layoutStyle && layoutStyle !== 'auto'
+        ? `STRICT REQUIREMENT: User requested "${layoutStyle}" layout pattern.`
+        : 'Optimize layout based on content nature (Auto-Mode).';
+
+    const userHeaderReq = headerStyle
+        ? `STRICT REQUIREMENT: User requested "${headerStyle}" header.`
+        : 'Choose best header for this brand.';
+
     const prompt = LAYOUT_PROMPT
         .replace(/{{brandName}}/g, brand.name)
         .replace(/{{brandCategory}}/g, brand.category || 'General')
@@ -165,7 +134,9 @@ export async function executeLayoutAgent(input: LayoutInput): Promise<LayoutOutp
         .replace(/{{wordCount}}/g, String(wordCount))
         .replace(/{{subjectLines}}/g, writerOutput.subjectLines.join(', '))
         .replace(/{{contentPreview}}/g, writerOutput.rawContent.substring(0, 1500))
-        .replace(/{{currentDate}}/g, currentDate);
+        .replace(/{{currentDate}}/g, currentDate)
+        .replace(/{{userLayoutStyle}}/g, userLayoutReq)
+        .replace(/{{userHeaderStyle}}/g, userHeaderReq);
 
     console.log("\\n╔══════════════════════════════════════╗");
     console.log("║       AGENT 3: LAYOUT AGENT          ║");
@@ -244,7 +215,8 @@ export async function executeLayoutAgent(input: LayoutInput): Promise<LayoutOutp
             textColor: layoutJson?.design_tokens?.text_color || fallbackPalette.text,
             bgColor: layoutJson?.design_tokens?.bg_color || fallbackPalette.background,
             fontFamily: layoutJson?.design_tokens?.font_family || "'Segoe UI', Roboto, sans-serif",
-            baseFontSize: layoutJson?.design_tokens?.base_font_size || 16
+            baseFontSize: layoutJson?.design_tokens?.base_font_size || 16,
+            borderRadius: layoutJson?.design_tokens?.border_radius || '8px'
         },
         dynamicElements: layoutJson?.dynamic_elements || [
             { type: 'cta_button', position: 'end', source: 'cta', cssClass: 'cta-primary' }

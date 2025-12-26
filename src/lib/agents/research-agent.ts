@@ -15,8 +15,10 @@ export interface ResearchInput {
     brand: BrandData;
     categories: string[];
     keywords: string[];
-    customTopic?: string; // Optional user-provided topic
+    customTopic?: string;
+    timeRange?: '24h' | '48h' | 'week' | 'any'; // New parameter
 }
+
 
 export interface ResearchOutput {
     mainStory: StoryData;
@@ -39,13 +41,15 @@ interface StoryData {
     sourceUrl?: string;
 }
 
+
 const RESEARCH_PROMPT = `
-Act as an Expert News Researcher and Content Curator.
+Act as an Expert News Researcher and Investigative Journalist.
 
 ## YOUR MISSION
-Find the most relevant, engaging, and newsworthy content for a newsletter targeting a specific audience.
+Find the most relevant, impactful, and trustworthy content for a high-quality industry newsletter.
+Your goal is not just to "find news" but to uncover **signals** amidst the noise.
 
-## BRAND CONTEXT (Use this to find RELEVANT content)
+## BRAND CONTEXT
 - Brand Name: {{brandName}}
 - Brand Category: {{category}}
 - Target Audience: {{audience}}
@@ -55,121 +59,77 @@ Find the most relevant, engaging, and newsworthy content for a newsletter target
 
 ## 🔴 CRITICAL SEARCH REQUIREMENTS (NON-NEGOTIABLE)
 
-### RECENCY REQUIREMENT (MOST IMPORTANT):
-**CRITICAL: Content MUST be from the last 24-48 hours.**
-- Search for news from TODAY and YESTERDAY only
-- Reject any stories older than 2 days (48 hours)
-- Check publication dates/timestamps carefully
-- If you cannot find 24-48 hour content, search for "last 24 hours [category] news"
+### 1. RECENCY & RELEVANCE (The "Freshness" Rule)
+- **Time Window**: Content MUST be from the **{{timeRange}}**.
+- **Exception**: If a major industry-shifting event happened slightly outside this window, you may include it, but prioritize freshness.
+- **Verification**: Check dates carefully. Do not recycle old news as "new".
 
-### CATEGORY & KEYWORD FOCUS:
-**Search specifically for: {{category}} + {{keywords}} + brand description themes**
-- Prioritize {{category}} industry news
-- Use {{keywords}} as primary search terms
-- Align with {{description}} mission/focus
-- Target {{audience}} interests
+### 2. SOURCE QUALITY (The "Authority" Rule)
+- **Prioritize**: Primary sources (company blogs, official announcements), reputable industry publications, and recognized experts.
+- **Avoid**: Generic content farms, clickbait sites, or superficial "Top 10" listicles without data.
+- **Seek**: Data, charts, official quotes, and hard numbers.
 
-### Search Query Format:
-"{{category}} {{keywords}} news [current date]"
-"latest {{category}} news last 24 hours"
-"{{keywords}} breaking news [today's date]"
+### 3. CONTENT DEPTH (The "Insight" Rule)
+- Do not just find "what happened". Find **"why it matters"**.
+- Look for:
+    - **Contrarian views**: Who disagrees with the popular narrative?
+    - **Hidden implications**: What does this mean for the next 6 months?
+    - **Hard Data**: Percentages, dollar amounts, benchmarks.
 
-## SEARCH INSTRUCTIONS
-1. **Search for 5-7 stories from the LAST 24-48 HOURS** related to category and keywords
-2. **Verify publication dates** - must be within last 2 days
-3. Prioritize stories that would RESONATE with {{audience}}
-4. Look for unique angles, data points, and expert opinions
-5. Find content from reputable sources (major publications, industry blogs, official announcements)
-6. **If no recent content found**, search more broadly but STILL prioritize recency
+## SEARCH STRATEGY
+1. **Targeted Queries**: Use specific queries like "{{category}} trends last 24h", "{{keyword}} new release", "analysis of [recent event]".
+2. **Cross-Referencing**: If Source A says X, check if Source B confirms it.
+3. **Filtering**: Discard press releases that are purely promotional fluff. Look for "Significant Updates".
 
-## OUTPUT STRUCTURE
+## OUTPUT STRUCTURE (Markdown)
 
-### MAIN STORY (The Deep Dive)
-Select the SINGLE most impactful story FROM LAST 24-48 HOURS.
-- **Headline**: [Clear, engaging headline]
+### MAIN STORY (The Lead)
+Select the ONE story that defines the week/day for this industry.
+- **Headline**: Punchy, improved headline (don't just copy source).
 - **Summary**: 
-  - Key Fact 1
-  - Key Fact 2
-  - Key Fact 3
-  - Why it matters to the audience
-- **Quotes**: 
-  > "Direct quote from source" - Person, Title
+  - **The "Hook"**: One sentence on what happened.
+  - **The "Details"**: 2-3 bullets with specific facts/data.
+  - **The "Why It Matters"**: Crucial context for {{audience}}.
+- **Key Quote**: "Direct quote" - Author/Speaker.
+- **Source**: [Original URL]
+- **Date**: [Date]
+
+### SECONDARY STORIES (3 Items)
+High-impact stories that support the targeted keywords.
+#### 1. [Headline]
+- **What**: Brief summary.
+- **Why**: One sentence on impact.
 - **Source**: [URL]
-- **Date Published**: [Must be within last 48 hours]
 
-### SECONDARY STORIES (3 items)
-Three other significant stories from LAST 24-48 HOURS.
-#### Story 1: [Headline]
-- Summary bullet points
-- Source: [URL]
-- Date: [Within last 48 hours]
-
-#### Story 2: [Headline]
+#### 2. [Headline]
+...
+#### 3. [Headline]
 ...
 
-#### Story 3: [Headline]
-...
+### RAPID FIRE (5-6 Items)
+Quick, scannable updates.
+- **[Category]**: [Headline] - One sentence takeaway. (Source: [Name])
 
-### RAPID FIRE (5-6 quick headlines)
-Short, punchy headlines from LAST 24-48 HOURS with one-sentence summaries.
-1. **[Headline]** - One sentence summary. (Published: [date])
-2. ...
+### INDUSTRY VISUALS (Descriptive)
+Describe 1 relevant chart or visual you found (if any) or suggest one.
+- **Visual Description**: e.g., "Chart showing 50% rise in X".
 
-### WATER COOLER MATERIAL
-One interesting fact, productivity tip, or conversation starter related to the industry.
+### WATER COOLER
+One "smart" conversational piece (unexpected stat, history fact, or productivity hack) related to {{category}}.
 
 ---
 
-## COLOR PALETTE SUGGESTION
-Based on the content theme, industry, and mood, suggest a cohesive 5-color palette in HEX format:
+## COLOR PALETTE INSPIRATION
+Based on the **mood** of today's news (e.g., Crisis = Red/Black, Growth = Green/Blue, Innovation = Purple/Neon), suggest a palette.
 
-**Guidelines by Industry:**
-- Tech/Software: Blues, teals (professional, trust)
-- Finance/Business: Greens, navy (growth, stability)
-- Creative/Design: Vibrant, bold colors (energy, creativity)
-- Health/Wellness: Greens, soft blues (calm, health)
-- News/Media: Reds, blacks (urgency, authority)
-
-**Output Format:**
-COLOR PALETTE:
-- Primary: #[HEX CODE] (main brand color)
-- Secondary: #[HEX CODE] (links, supporting elements)
-- Accent: #[HEX CODE] (CTAs, highlights)
-- Text: #1f2937 or darker (body text - must be readable)
-- Background: #ffffff or light tint (page background)
-
-**COLOR STYLE: PROFESSIONAL & SOBER**
-Newsletters require MUTED, PROFESSIONAL colors - NOT vibrant or flashy.
-
-Example palettes (pick from these styles):
-- **Corporate Blue**: Primary #1E3A5F (dark navy), Secondary #4A6FA5 (muted blue), Accent #2D5A3D (forest)
-- **Executive Gray**: Primary #374151 (charcoal), Secondary #6B7280 (slate), Accent #047857 (muted green)
-- **Professional Teal**: Primary #115E59 (deep teal), Secondary #0F766E (teal), Accent #B45309 (muted amber)
-- **Classic Navy**: Primary #1E3A8A (navy), Secondary #3B5998 (muted blue), Accent #7C3AED (muted purple)
-- **Warm Professional**: Primary #78350F (brown), Secondary #92400E (amber-brown), Accent #065F46 (emerald)
-
-**RULES:**
-1. Use DARK, MUTED primary colors (saturation 40-60%, not 100%)
-2. NO bright neons, hot pinks, electric blues
-3. Colors should feel like a professional email, not a party invite
-4. Think: Banks, Law firms, Corporate brands
-Choose colors that:
-1. Match the content mood and industry
-2. Have good contrast for readability
-3. Work well together as a cohesive palette
-4. Feel professional for email newsletters
-
----
-**IMPORTANT REMINDERS**:
-1. Do NOT write the newsletter. Only gather and organize the facts.
-2. ALL content must be from LAST 24-48 HOURS
-3. Focus on {{category}} and {{keywords}}
-4. Verify publication dates
-5. Provide complete color palette
+## FINAL CHECKLIST
+- [ ] Are all stories < 48 hours old?
+- [ ] Did you include "Why it matters" context?
+- [ ] Are sources trustworthy?
 `;
 
 export async function executeResearchAgent(input: ResearchInput): Promise<ResearchOutput> {
-    const { brand, categories, keywords, customTopic } = input;
+    const { brand, categories, keywords, customTopic, timeRange } = input;
 
     const category = categories.length > 0 ? categories.join(', ') : brand.category || 'business and technology';
     const keywordList = keywords.length > 0 ? keywords.join(', ') : 'latest news, trends, updates';
@@ -178,13 +138,19 @@ export async function executeResearchAgent(input: ResearchInput): Promise<Resear
         ? `\n- **PRIORITY TOPIC**: "${customTopic}" (Focus your research on this topic)`
         : '';
 
+    const timeRangeText = timeRange === 'week' ? 'Last 7 Days'
+        : timeRange === 'any' ? 'Any time (prioritize relevance)'
+            : timeRange === '24h' ? 'Last 24 Hours'
+                : 'Last 48 Hours'; // Default to 48h
+
     const prompt = RESEARCH_PROMPT
         .replace(/{{brandName}}/g, brand.name)
         .replace(/{{category}}/g, category)
         .replace(/{{audience}}/g, brand.audience || 'general professionals')
         .replace(/{{description}}/g, brand.description || 'A modern brand')
         .replace(/{{keywords}}/g, keywordList)
-        .replace(/{{customTopicSection}}/g, customTopicSection);
+        .replace(/{{customTopicSection}}/g, customTopicSection)
+        .replace(/{{timeRange}}/g, timeRangeText);
 
     console.log("\n╔══════════════════════════════════════╗");
     console.log("║       AGENT 1: RESEARCH AGENT        ║");

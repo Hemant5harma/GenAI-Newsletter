@@ -29,151 +29,78 @@ export interface WriterOutput {
 }
 
 const WRITER_PROMPT = `
-You are a professional NEWSLETTER WRITER. 
+You are a World-Class Newsletter Writer (e.g., like the writers of Morning Brew, The Hustle, or dense discovery).
 
-**CRITICAL WORD COUNT REQUIREMENT:**
-Your output MUST be between 1000-1500 words MINIMUM. 
-Count your words before finishing. If under 1000, expand the Deep-Dive section.
-This is a HARD requirement - do not submit content under 1000 words.
+## 🛑 BANNED PHRASES (INSTANT FAIL)
+DO NOT use these AI clichés. I will reject the output if I see them:
+- "In today's fast-paced world..."
+- "Let's dive in..."
+- "Game-changer"
+- "landscape" (unless referring to actual land)
+- "In conclusion"
+- "stark contrast"
+- "delve"
 
-You are writing a newsletter for {{brandName}}.
+## VOICE & TONE
+- **Status**: Smart, Insider, Friend.
+- **Tone**: {{tone}}
+- **Style**: Short sentences. Punchy. Use "You". Ask questions.
+- **Philosophy**: Don't just report news; tell me *why I should care* and *what I should do*.
 
-## CRITICAL: 9-SECTION STRUCTURE (FOLLOW EXACTLY IN THIS ORDER)
+## 🚨 CRITICAL REQUIREMENT: MINIMUM 1500 WORDS (NON-NEGOTIABLE)
+- **HARD MINIMUM**: 1500 words (count ONLY body text, NOT headers or structure).
+- **TARGET**: 1800-2000 words.
+- **RULE**: If the *body text* is under 1500 words, you have FAILED.
+  - Expand the Deep Dive section with detailed examples and data.
+  - Expand the "Signals" and "Toolbox" sections.
+- **NOTE**: The user expects a "Deep Dive" newsletter. Do NOT skimp on length.
+- **NOTE**: This is the {{wordCount}}+ word minimum set by the user.
 
-You MUST create content for ALL 9 sections below. This is a NEWSLETTER, not a blog article.
-**NOTE: DO NOT include any header or footer content - the Designer handles those automatically.**
-
----
+## WRITING STRUCTURE (9 SECTIONS)
 
 ### SECTION 1: SUBJECT LINE
-- Length: 40-60 characters EXACTLY
-- Descriptive but intriguing
-- Clearly reflect the main topic
-- NO clickbait - be direct
-- Example: "Scaling AI Backends: 3 Patterns That Work"
+- Generate 3 options.
+- Style: Curiosity Gap or High Value.
+- Format: "Subject: [Option 1]", "Preheader: [Option 1]"
 
 ### SECTION 2: PREHEADER
-- Length: 40-80 characters
-- One line that complements subject (not repeats it)
-- Summary of what's inside
-- Example: "Plus 4 tools to debug latency in production"
+- One punchy sentence found in the recipient's inbox preview.
 
-### SECTION 3: OPENING GREETING & HOOK (80-120 words)
-**Requirements**:
-- Start: "Hey [audience]," or similar
-- Hook: Reference a recent trend/problem the audience cares about
-- List what's in this issue (1-2 sentences or 2-3 bullets)
-- Total: 80-120 words
+### SECTION 3: THE HOOK (Opening)
+- **Goal**: Grab attention immediately.
+- **Method**: Start with a surprising stat, a bold statement, or a relatable problem.
+- **Length**: 80-120 words.
+- NO "Welcome to the newsletter". Just start.
 
-**Example structure**:
-"Hey developers,
-This week, everyone's talking about [trend]. But here's what most miss: [insight].
-In this issue:
-• Deep dive: [main topic]
-• 4 curated resources on [theme]
-• Quick tips for [specific problem]
-Let's dive in."
+### SECTION 4: THE DEEP DIVE (The Meat)
+- **Length**: 500-700 words.
+- **Structure**:
+    1. **The Problem**: What's broken or changing?
+    2. **The Shift**: What is the new reality?
+    3. **The Analysis**: Back it up with the Research Data provided.
+    4. **The Action**: What should the reader do differently?
+- **Format**: Use H2/H3 for subheads. Use bullet points for readability.
 
-### SECTION 4: FEATURED DEEP-DIVE ARTICLE (400-600 words) **CORE SECTION**
-**This is the MAIN content - most important section!**
+### SECTION 5: SIGNALS (Curated News)
+- **Length**: 250 words.
+- **Format**: 3-4 links.
+- **Style**: "[Headline] - [One sentence on what happened] + [One sentence on why it matters]."
 
-**Structure**:
-- Title (H2 style): Specific, clear
-- Intro (1-2 short paragraphs): Explain problem/topic
-- 2-4 subsections with subheadings (H3 style)
-- Short paragraphs (2-3 sentences each)
-- Use bullet lists where helpful
-- Include at least one mini example or scenario
-- End with "Key Takeaways" (3-5 bullets)
+### SECTION 6: THE TOOLBOX (Resources)
+- **Length**: 200 words.
+- **Content**: 1 High-value tool/resource + 2 Quick tips.
+- **Style**: Practical. "Use this to save 5 hours."
 
-**Content expectations**:
-- Explain the problem or context
-- Give concrete frameworks, steps, or patterns
-- Provide actionable information
-- Total: 400-600 words
+### SECTION 7: WATER COOLER (Fun)
+- **Length**: 100 words.
+- **Content**: A weird fact, history snippet, or industry meme description.
 
-### SECTION 5: CURATED LINKS / NEWS (200-300 words)
-**Title**: "This Week's Signals" or "Links Worth Your Time"
+### SECTION 8: THE ASK (CTA)
+- **Length**: 50 words.
+- **Content**: One clear Call to Action (e.g., "Reply 'Yes' if...", "Check out our premium...").
 
-**Include 3-5 items, each with**:
-- Title/label (1 line)
-- Your commentary (1-2 sentences): what it is and WHY it matters
-- NOT just summaries - add your perspective
-
-**Total**: 200-300 words across all items
-
-### SECTION 6: QUICK HITS / TOOLS (150-250 words)
-**Include AT LEAST ONE**:
-
-**Option A - Quick Tips**:
-- 3-5 bullets
-- Each: 1-2 sentences
-- Practical, immediately usable
-
-**Option B - Tool of the Week**:
-- 1 paragraph (3-4 sentences)
-- What it is, why useful, how to try it
-
-**Option C - Code/Pattern Snippet**:
-- Brief explanation (no large code dump)
-- Describe pattern/trick and when to use
-
-**Total**: 150-250 words
-
-### SECTION 7: PERSONAL NOTE (100-150 words) **RECOMMENDED**
-**Build connection with readers**:
-- What you're experimenting with
-- Behind-the-scenes detail
-- Challenge you faced and what you learned
-- More personal/opinionated tone
-
-**Total**: 100-150 words
-
-### SECTION 8: PRIMARY CALL-TO-ACTION (CTA)
-**ONE clear, specific action**:
-- Examples:
-  * "Reply with your biggest [problem]"
-  * "Join the Discord for live sessions"
-  * "Visit {{brandDomain}} for more"
-- 1-2 sentences context + CTA line
-- ONLY ONE primary CTA (no confusion)
-
-### SECTION 9: SECONDARY LINKS (OPTIONAL)
-**2-3 short bullets**:
-- Each: Title + 1 sentence explanation
-- Examples: blog, product, YouTube, social
-
----
-
-## WORD COUNT TARGETS (MUST MEET 1000+ TOTAL)
-
-- Greeting & hook: 80-120 words
-- **Deep-dive article**: 400-600 words (highest priority)
-- Curated links: 200-300 words
-- Quick hits/tools: 150-250 words
-- Personal note: 100-150 words
-- CTA: 50-80 words
-
-**TOTAL TARGET: 1000-1300 words**
-
-**ABSOLUTE MINIMUM: 1000 WORDS** - Count your output! 
-If under 1000, add more depth to the Deep-Dive section.
-
----
-
-## WRITING STYLE RULES
-
-**Tone**:
-- Clear, direct, expert but friendly
-- NO fluff - every paragraph teaches, updates, or motivates
-- Use "you" to address reader
-- Conversational
-
-**Formatting**:
-- Paragraphs: 2-3 sentences (rarely more)
-- Use bullet points for lists, steps, recommendations
-- Descriptive headings that reveal content
-- Keep terminology consistent
+### SECTION 9: SECONDARY LINKS
+- **Content**: 2-3 standard links (Archive, Socials).
 
 ---
 
@@ -182,73 +109,68 @@ If under 1000, add more depth to the Deep-Dive section.
 
 ---
 
-## OUTPUT FORMAT
-
-Provide content for ALL 9 SECTIONS in markdown format.
-**DO NOT include any header or footer - the Designer Agent adds those automatically.**
+## OUTPUT FORMAT (Markdown)
 
 # SECTION 1: SUBJECT LINE
-[40-60 char subject]
+[Selected Subject]
 
 # SECTION 2: PREHEADER
-[40-80 char preheader]
+[Selected Preheader]
 
 # SECTION 3: OPENING GREETING & HOOK
-[80-120 words]
+[Content...]
 
 # SECTION 4: DEEP-DIVE ARTICLE
-## [Article Title]
-[400-600 words with subsections]
-
-### Key Takeaways
-- [bullet 1]
-- [bullet 2]
-- [bullet 3]
+## [Title]
+[Content...]
 
 # SECTION 5: CURATED LINKS
-## This Week's Signals
-[3-5 items, 200-300 words total]
+## Signals
+[Content...]
 
 # SECTION 6: QUICK HITS
-## [Quick Tips / Tool of Week / Code Corner]
-[150-250 words]
+## Toolbox
+[Content...]
 
 # SECTION 7: PERSONAL NOTE
-[100-150 words]
+[Content...]
 
 # SECTION 8: PRIMARY CTA
-[Call to action]
+[Content...]
 
 # SECTION 9: SECONDARY LINKS
-[Optional 2-3 bullets]
+[Content...]
 
-**CRITICAL**: Include ALL 9 sections. Hit 1000+ word target. Use conversational tone. Short paragraphs.
-**DO NOT write any header or footer content.**
+**FINAL CHECK**: Did you hit 1000 words? Did you avoid "AI-isms"?
 `;
 
 export async function executeWriterAgent(input: WriterInput): Promise<WriterOutput> {
     const { brand, research, tone, wordCountMin } = input;
+
+    // Bump the user's min word count to ensure safety
+    const safeWordCount = Math.max(wordCountMin, 1500);
 
     const prompt = WRITER_PROMPT
         .replace(/{{brandName}}/g, brand.name)
         .replace(/{{brandDomain}}/g, brand.domain || 'example.com')
         .replace(/{{tone}}/g, tone || 'witty, smart, and conversational')
         .replace(/{{audience}}/g, brand.audience || 'busy professionals')
-        .replace(/{{wordCount}}/g, String(wordCountMin))
+        .replace(/{{wordCount}}/g, String(safeWordCount))
         .replace(/{{researchData}}/g, research.rawMarkdown);
 
     console.log("\n╔══════════════════════════════════════╗");
     console.log("║        AGENT 2: WRITER AGENT         ║");
     console.log("╚══════════════════════════════════════╝");
     console.log(`> Tone: ${tone}`);
-    console.log(`> Min Words: ${wordCountMin}`);
+    console.log(`> Min Words: ${safeWordCount}`);
     console.log(`> Writing content...`);
 
     const rawContent = await generateText(prompt);
 
-    // Count words
-    const wordCount = rawContent.split(/\s+/).length;
-    console.log(`> Writing Complete. Word count: ~${wordCount}`);
+    // Count words (Exclude headers starting with #)
+    const bodyText = rawContent.replace(/^#.*$/gm, '').trim();
+    const wordCount = bodyText.split(/\s+/).length;
+    console.log(`> Writing Complete. Body Word Payload: ~${wordCount}`);
     console.log(`> Preview:\n${rawContent.substring(0, 400)}...`);
 
     // Parse content into sections
@@ -265,7 +187,16 @@ export async function executeWriterAgent(input: WriterInput): Promise<WriterOutp
     // Extract subject line (format: # SECTION 1: SUBJECT LINE)
     const subjectMatch = rawContent.match(/#\s*SECTION\s*1[:\s]+SUBJECT\s*LINE[^\n]*\n+([^\n#]+)/i);
     if (subjectMatch) {
-        output.subjectLines = [subjectMatch[1].trim()];
+        let subject = subjectMatch[1].trim();
+        // Remove common prefixes iteratively (handles "Subject: [Option 1] Title")
+        while (true) {
+            const original = subject;
+            subject = subject.replace(/^(Subject:|Option \d+:?|\[Option \d+\]|Subject Line:)\s*/i, "").trim();
+            if (subject === original) break;
+        }
+        // Remove quotes if present
+        subject = subject.replace(/^["']|["']$/g, "");
+        output.subjectLines = [subject];
     }
 
     // Extract preheader as second option

@@ -21,6 +21,9 @@ export interface DesignerInput {
     text: string;
     background: string;
   };
+  // New customizations
+  fonts?: 'sans' | 'serif' | 'mono';
+  borderRadius?: string;
 }
 
 export interface DesignerOutput {
@@ -29,122 +32,71 @@ export interface DesignerOutput {
   preheader: string;
 }
 
-const BODY_CONTENT_PROMPT = `You are a WORLD-CLASS email newsletter designer. Create a visually stunning Morning Brew / The Hustle style newsletter.
+const BODY_CONTENT_PROMPT = `You are a WORLD-CLASS email newsletter designer (HTML/CSS Expert).
+Your goal is to convert Markdown content into a Pixel-Perfect, Responsive HTML Newsletter.
 
 BRAND: {{brandName}} | CATEGORY: {{brandCategory}}
 PRIMARY: {{primaryColor}} | ACCENT: {{accentColor}}
 
-CONTENT:
-{{writerContent}}
+## 📐 LAYOUT REQUIREMENTS (FROM ARCHITECT)
+{{layoutInstructions}}
 
-## DESIGN SYSTEM
+## 🎨 DESIGN SYSTEM (PREMIUM)
 
-### TYPOGRAPHY
-- Section Title: font-family:Georgia,serif; font-size:26px; font-weight:700; color:{{primaryColor}}; line-height:1.3;
-- Subsection: font-family:Arial,sans-serif; font-size:18px; font-weight:700; color:{{accentColor}}; margin:24px 0 12px 0;
-- Body: font-family:Arial,sans-serif; font-size:16px; line-height:1.75; color:#374151;
-- Label: font-family:Arial,sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9CA3AF;
+### GLOBAL STYLES
+- **Font Stack**: {{fontFamily}} (Clean, Modern).
+- **Background**: #F3F4F6 (Light Gray) for body, #FFFFFF (White) for cards.
+- **Spacing**: 24px padding standard. Handy "Airy" feel.
 
-### CARDS (Each section is a card)
-<tr><td style="padding:32px 28px;background:#FFFFFF;border-radius:16px;border:1px solid #E5E7EB;margin-bottom:24px;">
-  ...content...
-</td></tr>
-<tr><td height="24"></td></tr>
+### COMPONENT LIBRARY (Use these inline styles)
 
-### CALLOUT BOX (Use for key insights)
-<table role="presentation" width="100%" style="margin:20px 0;"><tr>
-  <td style="background:#F8FAFC;border-left:4px solid {{accentColor}};padding:16px 20px;border-radius:0 8px 8px 0;">
-    <p style="margin:0;font-size:15px;line-height:1.6;color:#475569;"><strong style="color:{{primaryColor}};">💡 Key Insight:</strong> [insight text]</p>
-  </td>
-</tr></table>
+**1. MAIN CARD (Container)**
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; margin-bottom: 24px; overflow:hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+  <tr><td style="padding: 32px 24px;">
+    <!-- Content goes here -->
+  </td></tr>
+</table>
 
-### STAT HIGHLIGHT (Use for big numbers)
-<table role="presentation" width="100%" style="margin:24px 0;"><tr>
-  <td align="center" style="padding:24px;background:linear-gradient(135deg,{{primaryColor}} 0%,{{accentColor}} 100%);border-radius:12px;">
-    <p style="margin:0;font-size:42px;font-weight:800;color:#FFFFFF;line-height:1;">85%</p>
-    <p style="margin:8px 0 0 0;font-size:14px;color:rgba(255,255,255,0.9);">of users reported improvement</p>
-  </td>
-</tr></table>
+**2. TYPOGRAPHY**
+- **H1 (Main Title)**: font-size: 28px; font-weight: 800; color: #111827; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 16px; font-family: {{fontFamily}};
+- **H2 (Section Header)**: font-size: 22px; font-weight: 700; color: {{primaryColor}}; margin-top: 0; margin-bottom: 12px; font-family: {{fontFamily}};
+- **H3 (Subhead)**: font-size: 18px; font-weight: 600; color: #374151; margin-top: 20px; margin-bottom: 8px; font-family: {{fontFamily}};
+- **Body Text**: font-size: 16px; line-height: 1.6; color: #4B5563; margin-bottom: 16px; font-family: {{fontFamily}};
+- **Link**: color: {{accentColor}}; text-decoration: underline; font-weight: 500;
 
-### IMAGE PLACEHOLDER
-<table role="presentation" width="100%" style="margin:24px 0;"><tr><td>
-  <div style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border-radius:12px;padding:48px 24px;text-align:center;">
-    <p style="margin:0 0 8px 0;font-size:14px;font-weight:600;color:#94a3b8;letter-spacing:1px;">📷 IMAGE PLACEHOLDER</p>
-    <p style="margin:0;font-size:13px;color:#64748b;">[Description] • 560×320px recommended</p>
-  </div>
+**3. FEATURED CALLOUT**
+<div style="background: #F8FAFC; border-left: 4px solid {{accentColor}}; padding: 16px; border-radius: 0 8px 8px 0; margin: 24px 0;">
+  <p style="margin: 0; font-size: 15px; color: #334155; font-style: italic; font-family: {{fontFamily}};">"Quote or key insight goes here"</p>
+</div>
+
+**4. CTA BUTTON (Primary)**
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding: 24px 0;">
+  <a href="#" style="background: {{accentColor}}; color: #FFFFFF; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); font-family: {{fontFamily}};">
+    Read More &rarr;
+  </a>
 </td></tr></table>
 
-### DIVIDER
-<table role="presentation" width="100%" style="margin:24px 0;"><tr>
-  <td height="1" style="background:linear-gradient(90deg,transparent 0%,#E5E7EB 20%,#E5E7EB 80%,transparent 100%);"></td>
-</tr></table>
+**5. DIVIDER**
+<div style="height: 1px; background-color: #E5E7EB; margin: 32px 0;"></div>
 
-### BULLET LIST
-<table role="presentation" width="100%" style="margin:16px 0;"><tr>
-  <td width="24" valign="top" style="color:{{accentColor}};font-size:18px;line-height:1.6;">•</td>
-  <td style="font-size:16px;line-height:1.6;color:#374151;padding-left:8px;">[List item text]</td>
-</tr></table>
+## CONTENT TO RENDER
+{{writerContent}}
 
-### CTA BUTTON
-<table role="presentation" align="center" style="margin:32px auto;"><tr>
-  <td style="background:{{accentColor}};border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,0.12);">
-    <a href="#" style="display:block;padding:16px 40px;font-family:Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;">Explore Now →</a>
-  </td>
-</tr></table>
+## EXECUTION RULES
+1. **Strict Table Structure**: Use nested tables for everything. No Div-only layouts (email client compatibility).
+2. **Inline CSS**: All styling must be inline.
+3. **Respect the Blueprint**: Follow the order and visual types defined in the 'LAYOUT REQUIREMENTS'.
+4. **Use Custom Colors**: Use {{primaryColor}} for headers and {{accentColor}} for CTAs/links consistently.
+5. **Use Custom Font**: IMPORTANT - Use {{fontFamily}} for ALL text elements (headings, paragraphs, links, buttons).
+6. **Mobile Responsiveness**: Add 'class="mobile-full-width"' to main tables.
+7. **No Placeholders**: Use the actual content provided. If an image is requested in the blueprint but no URL provided, use a solid color block with the alt text.
+8. **NO HEADERS/FOOTERS**: ⛔ DO NOT generate a Header, Logo, Date line, or Footer (Address, Unsubscribe). These are already injected by the system wrapper. JUST generate the content sections (Intro -> Deep Dive -> ... -> CTA).
+9. **NO HTML SHELL**: ⛔ DO NOT generate <head>, <body>, or <html> tags. Just the internal table structure.
 
-## SECTIONS TO CREATE
-
-**SECTION 4 - Opening** (120-150 words)
-- Light greeting with emoji
-- What's in this issue (bullets)
-- Hook sentence
-
-**SECTION 5 - Deep Dive** (550-700 words)
-- Compelling title with emoji prefix
-- 3-4 subsections with subheaders
-- Include 1 STAT HIGHLIGHT
-- Include 1 CALLOUT BOX
-- Include 1 IMAGE PLACEHOLDER
-- End with Key Takeaways (bullet list)
-
-**SECTION 6 - Quick Hits** (280-350 words)
-- 3-5 news items with emoji prefix
-- Each: Bold title + 2-3 sentence summary
-- Include 1 IMAGE PLACEHOLDER
-
-**SECTION 7 - Tip of Week** (150-200 words)
-- Practical, actionable tip
-- Why it matters
-- How to implement
-
-**SECTION 8 - Personal Note** (120-150 words)
-- Conversational tone
-- Behind-the-scenes insight
-- Question to readers
-
-**SECTION 9 - CTA** 
-- Compelling 1-line headline
-- Value prop sentence
-- Premium CTA button
-
-**SECTION 10 - Quick Links**
-- 2-3 resource links
-
-## RULES
-1. Output ONLY table-based HTML
-2. Every element has inline CSS
-3. Use patterns from Design System above
-4. Minimum 1000 words
-5. 2 image placeholders
-6. 1 stat highlight
-7. 1 callout box
-8. No DOCTYPE/html/head/body tags
-9. Start with <table>
-
-Generate premium body HTML now:`;
+GENERATE THE HTML BODY NOW:`;
 
 export async function executeDesignerAgent(input: DesignerInput): Promise<DesignerOutput> {
-  const { brand, content, colors, colorPalette } = input;
+  const { brand, content, colors, colorPalette, layoutBlueprint, fonts, borderRadius } = input;
 
   const dynamicColors = colorPalette || {
     primary: colors.primary,
@@ -153,6 +105,31 @@ export async function executeDesignerAgent(input: DesignerInput): Promise<Design
     text: '#1f2937',
     background: '#ffffff'
   };
+
+  // Determine Font Stack
+  const fontStack = fonts === 'serif' ? '"Georgia", "Times New Roman", serif'
+    : fonts === 'mono' ? '"Courier New", Courier, monospace'
+      : '"Helvetica Neue", Helvetica, Arial, sans-serif'; // Default Sans
+
+  // Build the Layout String to inject into the prompt
+  let layoutInstructions = "Follow the standard 9-section flow.";
+  if (layoutBlueprint) {
+    const sections = layoutBlueprint.sectionsOrder.map(s =>
+      `- Section ${s.position}: Type="${s.type}", Visual="${s.visualType}" (Source: ${s.sourceSection})`
+    ).join('\n');
+
+    layoutInstructions = `
+**CHOSEN LAYOUT**: ${layoutBlueprint.chosenLayout.name} (${layoutBlueprint.chosenLayout.id})
+**MOBILE NOTES**: ${layoutBlueprint.mobileNotes}
+
+**SECTION ORDER (Strictly Follow):**
+${sections}
+
+**DESIGN TOKENS**:
+- Font: ${fonts ? fontStack : layoutBlueprint.designTokens.fontFamily}
+- Radius: ${borderRadius || layoutBlueprint.designTokens.borderRadius || '8px'}
+      `;
+  }
 
   const randomHeader = HEADER_TEMPLATES[Math.floor(Math.random() * HEADER_TEMPLATES.length)];
   const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -170,15 +147,16 @@ export async function executeDesignerAgent(input: DesignerInput): Promise<Design
     .replace(/\{\{brandCategory\}\}/g, brand.category || 'General')
     .replace(/\{\{primaryColor\}\}/g, dynamicColors.primary)
     .replace(/\{\{accentColor\}\}/g, dynamicColors.accent)
-    .replace(/\{\{writerContent\}\}/g, content.rawContent);
+    .replace(/\{\{fontFamily\}\}/g, fontStack)
+    .replace(/\{\{writerContent\}\}/g, content.rawContent)
+    .replace(/\{\{layoutInstructions\}\}/g, layoutInstructions);
 
   console.log("\n╔══════════════════════════════════════╗");
   console.log("║       AGENT 4: DESIGNER AGENT        ║");
   console.log("╚══════════════════════════════════════╝");
   console.log(`> 🎨 PREMIUM MODE`);
-  console.log(`> Header Template: ${randomHeader.name}`);
+  console.log(`> Layout Pattern: ${layoutBlueprint?.chosenLayout?.id || 'Standard'}`);
   console.log(`> Primary Color: ${dynamicColors.primary}`);
-  console.log(`> Accent Color: ${dynamicColors.accent}`);
   console.log(`> Generating body content...`);
 
   let bodyContent = await generateText(prompt);
